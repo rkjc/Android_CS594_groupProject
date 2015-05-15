@@ -3,28 +3,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1.0"
     android:orientation="vertical">
 
-    <RelativeLayout
+
+
+    <Button
+        android:layout_width="100dip"
+        android:layout_height="40dip"
+        android:id="@+id/connection_button"
+        android:text="press"
+        />
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight=".5">
+        android:layout_height="wrap_content"
+        android:text="paired devices"/>
+    <ListView
+        android:id="@+id/paired_devices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:stackFromBottom="true">
 
-        <Button
-            android:layout_width="100dip"
-            android:layout_height="40dip"
-            android:id="@+id/connection_button"
-            android:text="press"
-            />
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="200dip"
-            android:id="@+id/list"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true">
+    </ListView>
 
-        </ListView>
-    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="new devices"
+        />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list"
+        android:layout_weight="2"
+        android:stackFromBottom="true">
+
+    </ListView>
+
 
 </LinearLayout>
