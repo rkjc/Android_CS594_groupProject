@@ -45,7 +45,7 @@ public class BluetoothFragment extends Fragment {
 
     private BluetoothAdapter mBluetoothAdapter = null;
 
-    private ConnectionActivity mConnectionService = null;
+    private BluetoothServer mConnectionService = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -55,7 +55,7 @@ public class BluetoothFragment extends Fragment {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if(mBluetoothAdapter == null){
-            Toast.makeText(getActivity(), "bluetooth is not availabl", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "bluetooth is not available", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -82,7 +82,7 @@ public class BluetoothFragment extends Fragment {
     public void onResume(){
         super.onResume();
 
-        if(mConnectionService.getState() == ConnectionActivity.STATE_NONE){
+        if(mConnectionService.getState() == BluetoothServer.STATE_NONE){
             mConnectionService.start();
         }
     }
@@ -185,7 +185,7 @@ public class BluetoothFragment extends Fragment {
               case Constants.MESSAGE_STATE_CHANGE:
                   switch (msg.arg1) {
                       case BluetoothServer.STATE_CONNECTED:
-                          setStatus(getString("connected to", mConnectedDeviceName));
+                          setStatus("connected to" + mConnectedDeviceName);
                           mConversationArrayAdapter.clear();
                           break;
                       case BluetoothServer.STATE_CONNECTING:
@@ -234,7 +234,7 @@ public class BluetoothFragment extends Fragment {
             case REQUEST_CONNECT:
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
-                    connectDevice(data, false);
+                    connectDevice(data);
                 }
                 break;
             case REQUEST_ENABLE_BLUETOOTH:

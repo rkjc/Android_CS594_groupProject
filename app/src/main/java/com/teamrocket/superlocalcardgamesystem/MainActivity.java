@@ -14,7 +14,7 @@ import android.widget.Button;
 
 import java.util.Set;
 
-
+@SuppressWarnings("deprecation")
 public class MainActivity extends ActionBarActivity {
 
     @Override

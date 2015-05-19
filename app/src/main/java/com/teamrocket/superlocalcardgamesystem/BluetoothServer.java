@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Created by tj on 5/12/15.
  */
-public class BluetoothServer {
+public class BluetoothServer extends ConnectionActivity {
 
     private static final String TAG = "BluetoothServer";
     private  UUID mUuid = UUID.fromString("41209FF4-F934-11E4-A11D-9DE8802E39D2");
@@ -29,10 +29,10 @@ public class BluetoothServer {
     private ConnectedThread mConnectedThread;
     private int mState;
 
-    public static final int STATE_NONE = 0;
-    public static final int STATE_LISTEN = 1;
-    public static final int STATE_CONNECTING = 2;
-    public static final int STATE_CONNECTED = 3;
+	public static final int STATE_NONE = 0;
+	public static final int STATE_LISTEN = 1;
+	public static final int STATE_CONNECTING = 2;
+	public static final int STATE_CONNECTED = 3;
 
     public BluetoothServer(Context context, Handler handler){
         mAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -52,7 +52,7 @@ public class BluetoothServer {
     }
 
     public synchronized void start(){
-        Log.i(TAG, "startig");
+        Log.i(TAG, "starting");
 
         if(mConnectedThread != null){
             mConnectThread.cancel();
@@ -67,34 +67,34 @@ public class BluetoothServer {
         setState(STATE_LISTEN);
 
         if(mAcceptThread == null){
-            mAcceptThread = new AcceptThread(true);
+            mAcceptThread = new AcceptThread();
             mAcceptThread.start();;
         }
     }
 
     public synchronized void connect(BluetoothDevice device){
-
+        ; // TODO
     }
 
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device,
         final String socketType){
-
+        ; // TODO
     }
 
     public synchronized void stop(){
-
+        ; // TODO
     }
 
     public void write(byte[] out){
-
+        ; // TODO
     }
 
     public void connectionFailed(){
-
+        ; // TODO
     }
 
     public void connectionLost(){
-
+        ; // TODO
     }
 
     private class AcceptThread extends Thread {
@@ -142,7 +142,7 @@ public class BluetoothServer {
     }
 
     private class ConnectThread extends Thread {
-
+        ; // TODO
     }
 
 
@@ -167,15 +167,15 @@ public class BluetoothServer {
         }
 
         public void run(){
-
+            ; // TODO
         }
 
         public void write(byte[] buffer){
-
+            ; // TODO
         }
 
         public void cancel() {
-
+            ; // TODO
         }
     }
 }

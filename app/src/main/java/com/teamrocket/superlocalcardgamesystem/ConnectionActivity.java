@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import java.util.Set;
 
-
+@SuppressWarnings("deprecation")
 public class ConnectionActivity extends ActionBarActivity {
 
     private ArrayAdapter<String> newDevicesAdapter;
