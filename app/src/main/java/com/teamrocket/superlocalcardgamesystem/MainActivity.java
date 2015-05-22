@@ -32,13 +32,13 @@ public class MainActivity extends ActionBarActivity {
 
     private final String TAG = "MainActivity";
     private int threadType;
-    TextView info, infoIp, msg;
+    TextView info, infoIp;
     String message = "";
     String receivedMessage = "";
     ServerSocket serverSocket;
     ConnectedThread connectedThread;
     List<ConnectedThread> listThreads;
-    EditText editTextMessage;
+    EditText editTextMessage, joinPort, joinAddress;
     Button buttonSend, buttonHost, buttonClient;
     ArrayAdapter convoArrayAdapter;
     ListView convoView;
@@ -51,17 +51,17 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         info = (TextView)findViewById(R.id.info);
         infoIp = (TextView)findViewById(R.id.infoip);
-        //msg = (TextView)findViewById(R.id.msg);
         convoArrayAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.message);
         convoView = (ListView)findViewById(R.id.convo);
         convoView.setAdapter(convoArrayAdapter);
         editTextMessage = (EditText)findViewById(R.id.message);
+        joinAddress = (EditText)findViewById(R.id.join_address);
+        joinPort = (EditText)findViewById(R.id.join_port);
         buttonSend = (Button)findViewById(R.id.send);
         buttonHost = (Button)findViewById(R.id.host);
         buttonClient = (Button)findViewById(R.id.client);
         iconView = (ImageView)findViewById(R.id.splash_icon);
         listThreads = new ArrayList<ConnectedThread>();
-        //setWriteListener();
         setMultiWriteListener();
 
         infoIp.setText(getIpAddress());
@@ -74,10 +74,7 @@ public class MainActivity extends ActionBarActivity {
                 threadType = Constants.HOST_THREAD;
                 Thread socketServerThread = new Thread(new SocketServerThread());
                 socketServerThread.start();
-                buttonSend.setVisibility(View.VISIBLE);
-                info.setVisibility(View.VISIBLE);
-                editTextMessage.setVisibility(View.VISIBLE);
-                iconView.setVisibility(View.GONE);
+                setupLobby();
             }
         });
         buttonClient.setOnClickListener(new View.OnClickListener(){
@@ -86,10 +83,7 @@ public class MainActivity extends ActionBarActivity {
                 threadType = Constants.CLIENT_THREAD;
                 Thread thread = new Thread(new SocketClientThread());
                 thread.start();
-                buttonSend.setVisibility(View.VISIBLE);
-                info.setVisibility(View.VISIBLE);
-                editTextMessage.setVisibility(View.VISIBLE);
-                iconView.setVisibility(View.GONE);
+                setupLobby();
             }
         });
 
@@ -112,7 +106,14 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-
+    public void setupLobby(){
+        buttonSend.setVisibility(View.VISIBLE);
+        info.setVisibility(View.VISIBLE);
+        editTextMessage.setVisibility(View.VISIBLE);
+        joinPort.setVisibility(View.GONE);
+        joinAddress.setVisibility(View.GONE);
+        iconView.setVisibility(View.GONE);
+    }
 
     public void setMultiWriteListener(){
         buttonSend.setOnClickListener(new View.OnClickListener(){
