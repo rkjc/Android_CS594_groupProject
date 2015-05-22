@@ -114,16 +114,6 @@ public class MainActivity extends ActionBarActivity {
 
 
 
-    public void setWriteListener(){
-        buttonSend.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                connectedThread.write(editTextMessage.getText().toString());
-                editTextMessage.setText("");
-            }
-        });
-    }
-
     public void setMultiWriteListener(){
         buttonSend.setOnClickListener(new View.OnClickListener(){
             @Override
