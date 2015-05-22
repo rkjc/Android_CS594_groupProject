@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-
+@SuppressWarnings("deprecation")
 public class MainActivity extends ActionBarActivity {
 
     private final String TAG = "MainActivity";
@@ -68,7 +68,6 @@ public class MainActivity extends ActionBarActivity {
         infoIp.setText(getIpAddress());
         Log.i(TAG, getIpAddress());
 
-
         buttonHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +88,6 @@ public class MainActivity extends ActionBarActivity {
                 setupLobby();
             }
         });
-
         // testing global object MyApplication
         MyApplication myApplication = (MyApplication)getApplication();
         Log.i(TAG, myApplication.getNum() + "" );
@@ -143,9 +141,7 @@ public class MainActivity extends ActionBarActivity {
                     public void run(){
                         info.setText("Game Port: " + serverSocket.getLocalPort());
                     }
-                }
-                );
-
+                });
                 while(true){
                     Socket socket = serverSocket.accept();
                     count++;
@@ -214,7 +210,6 @@ public class MainActivity extends ActionBarActivity {
         public void run() {
             out = new PrintWriter(outputStream,true);
             in = new BufferedReader( new InputStreamReader(	inputStream));
-
             if(threadType == Constants.HOST_THREAD){
                 String msgReply = "Hello from Android, you are player#" + cnt;
                 write(msgReply);
@@ -252,13 +247,11 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
             }
-
         }
 
         public void write(String msgReply) {
             out.println(msgReply);
         }
-
     }
 
     private String getIpAddress(){
