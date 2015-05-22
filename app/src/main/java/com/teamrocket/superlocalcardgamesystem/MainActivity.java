@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -81,7 +82,9 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v){
                 threadType = Constants.CLIENT_THREAD;
-                Thread thread = new Thread(new SocketClientThread());
+                String ipAddress = joinAddress.getText().toString();
+                int port = Integer.parseInt(joinPort.getText().toString());
+                Thread thread = new Thread(new SocketClientThread(ipAddress, port));
                 thread.start();
                 setupLobby();
             }
@@ -160,11 +163,20 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private class SocketClientThread extends Thread{
+        String ipAddress;
+        int port;
+        public SocketClientThread(String ipAddress, int port){
+            this.ipAddress = ipAddress;
+            this.port = port;
+        }
         @Override
         public void run(){
             Socket s;
             try{
-                s = new Socket("192.168.1.68", 8080); //temporarily hard coded for testing
+//                ipAddress = joinAddress.getText().toString();
+//                port = Integer.parseInt(joinPort.getText().toString());
+                //s = new Socket("192.168.1.68", 8080); //temporarily hard coded for testing
+                s = new Socket(ipAddress, port);
                 connectedThread =  new ConnectedThread(s,0);
                 listThreads.add(connectedThread);
                 connectedThread.start();
