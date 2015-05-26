@@ -40,7 +40,7 @@ public class MainActivity extends ActionBarActivity {
     ConnectedThread connectedThread;
     List<ConnectedThread> listThreads;
     EditText editTextMessage, joinAddress;
-    Button buttonSend, buttonHost, buttonClient;
+    Button buttonSend, buttonStartGame, buttonHost, buttonClient;
     ArrayAdapter convoArrayAdapter;
     ListView convoView;
     ImageView iconView;
@@ -58,6 +58,7 @@ public class MainActivity extends ActionBarActivity {
         editTextMessage = (EditText)findViewById(R.id.message);
         joinAddress = (EditText)findViewById(R.id.join_address);
         buttonSend = (Button)findViewById(R.id.send);
+        buttonStartGame = (Button)findViewById(R.id.start_game);
         buttonHost = (Button)findViewById(R.id.host);
         buttonClient = (Button)findViewById(R.id.client);
         iconView = (ImageView)findViewById(R.id.splash_icon);
@@ -70,6 +71,7 @@ public class MainActivity extends ActionBarActivity {
         buttonHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "setting up host thread");
                 threadType = Constants.HOST_THREAD;
                 Thread socketServerThread = new Thread(new SocketServerThread());
                 socketServerThread.start();
@@ -79,6 +81,7 @@ public class MainActivity extends ActionBarActivity {
         buttonClient.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                Log.d(TAG, "setting up client thread");
                 threadType = Constants.CLIENT_THREAD;
                 String ipAddress = joinAddress.getText().toString();
                 Thread thread = new Thread(new SocketClientThread(ipAddress));
@@ -107,6 +110,9 @@ public class MainActivity extends ActionBarActivity {
 
     public void setupLobby(){
         buttonSend.setVisibility(View.VISIBLE);
+        buttonStartGame.setVisibility(View.VISIBLE);
+        buttonClient.setVisibility(View.GONE);
+        buttonHost.setVisibility(View.GONE);
         info.setVisibility(View.VISIBLE);
         editTextMessage.setVisibility(View.VISIBLE);
         joinAddress.setVisibility(View.GONE);
