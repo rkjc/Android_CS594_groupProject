@@ -173,9 +173,6 @@ public class MainActivity extends ActionBarActivity {
         public void run(){
             Socket s;
             try{
-//                ipAddress = joinAddress.getText().toString();
-//                port = Integer.parseInt(joinPort.getText().toString());
-                //s = new Socket("192.168.1.68", 8080); //temporarily hard coded for testing
                 s = new Socket(ipAddress, port);
                 connectedThread =  new ConnectedThread(s,0);
                 listThreads.add(connectedThread);
