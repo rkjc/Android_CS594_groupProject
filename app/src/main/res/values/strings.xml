@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">SuperLocalCardGameSystem</string>
-
+    <string name="app_name">Super Local Card Game System</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="portDefault">8080</string>
+    <string name="addressDefault">192.168.1.68</string>
 </resources>
