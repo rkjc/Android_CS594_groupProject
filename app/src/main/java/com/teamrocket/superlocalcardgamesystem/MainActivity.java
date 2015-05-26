@@ -39,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
     ServerSocket serverSocket;
     ConnectedThread connectedThread;
     List<ConnectedThread> listThreads;
-    EditText editTextMessage, joinPort, joinAddress;
+    EditText editTextMessage, joinAddress;
     Button buttonSend, buttonHost, buttonClient;
     ArrayAdapter convoArrayAdapter;
     ListView convoView;
@@ -57,7 +57,6 @@ public class MainActivity extends ActionBarActivity {
         convoView.setAdapter(convoArrayAdapter);
         editTextMessage = (EditText)findViewById(R.id.message);
         joinAddress = (EditText)findViewById(R.id.join_address);
-        joinPort = (EditText)findViewById(R.id.join_port);
         buttonSend = (Button)findViewById(R.id.send);
         buttonHost = (Button)findViewById(R.id.host);
         buttonClient = (Button)findViewById(R.id.client);
@@ -82,8 +81,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v){
                 threadType = Constants.CLIENT_THREAD;
                 String ipAddress = joinAddress.getText().toString();
-                int port = Integer.parseInt(joinPort.getText().toString());
-                Thread thread = new Thread(new SocketClientThread(ipAddress, port));
+                Thread thread = new Thread(new SocketClientThread(ipAddress));
                 thread.start();
                 setupLobby();
             }
@@ -111,7 +109,6 @@ public class MainActivity extends ActionBarActivity {
         buttonSend.setVisibility(View.VISIBLE);
         info.setVisibility(View.VISIBLE);
         editTextMessage.setVisibility(View.VISIBLE);
-        joinPort.setVisibility(View.GONE);
         joinAddress.setVisibility(View.GONE);
         iconView.setVisibility(View.GONE);
     }
@@ -129,13 +126,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private class SocketServerThread extends Thread{
-        static final int port = 8080;
         int count = 0;
-
         @Override
         public void run(){
             try{
-                serverSocket = new ServerSocket(port);
+                serverSocket = new ServerSocket(Constants.PORT);
                 MainActivity.this.runOnUiThread( new Runnable() {
                     @Override
                     public void run(){
@@ -160,16 +155,14 @@ public class MainActivity extends ActionBarActivity {
 
     private class SocketClientThread extends Thread{
         String ipAddress;
-        int port;
-        public SocketClientThread(String ipAddress, int port){
+        public SocketClientThread(String ipAddress){
             this.ipAddress = ipAddress;
-            this.port = port;
         }
         @Override
         public void run(){
             Socket s;
             try{
-                s = new Socket(ipAddress, port);
+                s = new Socket(ipAddress, Constants.PORT);
                 connectedThread =  new ConnectedThread(s,0);
                 listThreads.add(connectedThread);
                 connectedThread.start();
