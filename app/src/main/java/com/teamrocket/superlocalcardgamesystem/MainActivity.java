@@ -75,6 +75,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "setting up host thread");
+                RegisterNetworkService rns = new RegisterNetworkService(getApplicationContext());
                 threadType = Constants.HOST_THREAD;
                 Thread socketServerThread = new Thread(new SocketServerThread());
                 socketServerThread.start();
@@ -290,6 +291,7 @@ public class MainActivity extends ActionBarActivity {
             threadMap.remove(id);
             lostThread.connectedSocket.close();
             connectedHostThread.connectedSocket.close();
+            Log.i(TAG, "closed socket for player: " + id.toString());
         }
         catch(IOException e){
             Log.e(TAG, "connectionLost() on socketId: " + socketId, e);
