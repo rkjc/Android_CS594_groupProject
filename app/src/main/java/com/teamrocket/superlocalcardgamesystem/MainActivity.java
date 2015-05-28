@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,12 +25,14 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends ActionBarActivity {
 
     private final String TAG = "MainActivity";
+    MyApplication myApp;
     private int threadType;
     TextView info, infoIp;
     String message = "";
@@ -39,6 +40,7 @@ public class MainActivity extends ActionBarActivity {
     ServerSocket serverSocket;
     ConnectedThread connectedThread;
     List<ConnectedThread> listThreads;
+    HashMap<Integer, ConnectedThread> threadMap;
     EditText editTextMessage, joinAddress;
     Button buttonSend, buttonStartGame, buttonHost, buttonClient;
     ArrayAdapter convoArrayAdapter;
@@ -63,6 +65,7 @@ public class MainActivity extends ActionBarActivity {
         buttonClient = (Button)findViewById(R.id.client);
         iconView = (ImageView)findViewById(R.id.splash_icon);
         listThreads = new ArrayList<ConnectedThread>();
+        threadMap = new HashMap<Integer, ConnectedThread>();
         setMultiWriteListener();
 
         infoIp.setText(getIpAddress());
@@ -90,8 +93,8 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         // testing global object MyApplication
-        MyApplication myApplication = (MyApplication)getApplication();
-        Log.i(TAG, myApplication.getNum() + "" );
+        myApp = (MyApplication)getApplication();
+        Log.i(TAG, myApp.getNum() + "" );
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
@@ -103,7 +106,7 @@ public class MainActivity extends ActionBarActivity {
                 serverSocket.close();
             }
             catch(IOException e){
-
+                Log.e(TAG, "error on onDestroy() to close the socket", e);
             }
         }
     }
@@ -123,8 +126,9 @@ public class MainActivity extends ActionBarActivity {
         buttonSend.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                for(ConnectedThread thread: listThreads){
-                    thread.write(editTextMessage.getText().toString());
+                Integer[] keys = threadMap.keySet().toArray( new Integer[0] );
+                for(Integer key: keys ){
+                    threadMap.get(key).write(editTextMessage.getText().toString());
                 }
                 editTextMessage.setText("");
             }
@@ -132,7 +136,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private class SocketServerThread extends Thread{
-        int count = 0;
+
         @Override
         public void run(){
             try{
@@ -145,16 +149,14 @@ public class MainActivity extends ActionBarActivity {
                 });
                 while(true){
                     Socket socket = serverSocket.accept();
-                    count++;
-                    message = "#" + count + " from " + socket.getInetAddress() + ":"
-                            + socket.getPort() + "\n";
-                    connectedThread = new ConnectedThread(socket, count);
-                    listThreads.add(connectedThread);
+                    myApp.autoId++;
+                    connectedThread = new ConnectedThread(socket, myApp.autoId);
+                    threadMap.put(new Integer(myApp.autoId), connectedThread);
                     connectedThread.start();
                 }
             }
             catch (IOException e){
-
+                Log.e(TAG, "exception in SocketServerThread", e);
             }
         }
     }
@@ -170,31 +172,34 @@ public class MainActivity extends ActionBarActivity {
             try{
                 s = new Socket(ipAddress, Constants.PORT);
                 connectedThread =  new ConnectedThread(s,0);
-                listThreads.add(connectedThread);
+                threadMap.put(new Integer(myApp.autoId), connectedThread);
                 connectedThread.start();
             }
             catch(IOException e){
+                Log.e(TAG, "exception in SocketClientThread", e);
                 e.printStackTrace();
             }
         }
     }
 
     private class ConnectedThread extends Thread {
-        private Socket hostThreadSocket;
-        int cnt;
+        private Socket connectedSocket;
+        int socketId;
+        int connectionStatus;
         OutputStream outputStream;
         PrintWriter out;
         InputStream inputStream;
         BufferedReader in;
 
-        ConnectedThread(Socket socket, int c) {
-            hostThreadSocket = socket;
-            cnt = c;
+        ConnectedThread(Socket socket, int id) {
+            connectedSocket = socket;
+            socketId = id;
+            connectionStatus = Constants.CONNECTED;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
             try {
-                tmpIn = hostThreadSocket.getInputStream();
-                tmpOut = hostThreadSocket.getOutputStream();
+                tmpIn = connectedSocket.getInputStream();
+                tmpOut = connectedSocket.getOutputStream();
             } catch (IOException e) {
                 Log.e(TAG, "temp sockets not created", e);
             }
@@ -207,20 +212,27 @@ public class MainActivity extends ActionBarActivity {
             out = new PrintWriter(outputStream,true);
             in = new BufferedReader( new InputStreamReader(	inputStream));
             if(threadType == Constants.HOST_THREAD){
-                String msgReply = "Hello from Android, you are player#" + cnt;
+                String msgReply = "Entered the game lobby as player: " + socketId;
                 write(msgReply);
-                while (true) {
+                while (true && connectionStatus == Constants.CONNECTED) {
                     try {
                         receivedMessage = in.readLine();
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                for(ConnectedThread thread: listThreads){
-                                    thread.write(receivedMessage);
+                        if(receivedMessage == null && connectionStatus == Constants.CONNECTED){ // the socket was lost
+                            connectionStatus = Constants.DISCONNECTED;
+                            connectionLost(socketId, this);
+                        }
+                        else if(receivedMessage != null){
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Integer[] keys = threadMap.keySet().toArray( new Integer[0] );
+                                    for(Integer key: keys ){
+                                        threadMap.get(key).write(receivedMessage);
+                                    }
+                                    convoArrayAdapter.add(receivedMessage);
                                 }
-                                convoArrayAdapter.add(receivedMessage);
-                            }
-                        });
+                            });
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                         break;
@@ -244,7 +256,6 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         }
-
         public void write(String msgReply) {
             out.println(msgReply);
         }
@@ -269,5 +280,19 @@ public class MainActivity extends ActionBarActivity {
             Log.e(TAG, "getIpAddress()", e);
         }
         return ip;
+    }
+
+    private void connectionLost(int socketId, ConnectedThread connectedHostThread) {
+        // Send a failure message
+        Integer id = new Integer(socketId);
+        try {
+            ConnectedThread lostThread = threadMap.get(id);
+            threadMap.remove(id);
+            lostThread.connectedSocket.close();
+            connectedHostThread.connectedSocket.close();
+        }
+        catch(IOException e){
+            Log.e(TAG, "connectionLost() on socketId: " + socketId, e);
+        }
     }
 }

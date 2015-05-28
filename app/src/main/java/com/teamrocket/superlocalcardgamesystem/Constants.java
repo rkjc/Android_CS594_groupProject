@@ -8,4 +8,7 @@ public interface Constants {
     public static final int CLIENT_THREAD = 1;
 
     public static final int PORT = 9000;
+
+    public static final int CONNECTED = 0;
+    public static final int DISCONNECTED = 1;
 }
