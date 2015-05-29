@@ -33,6 +33,7 @@ public class RegisterNetworkService {
         this.mNsdManager = (NsdManager)context.getSystemService(context.NSD_SERVICE);
         mNsdManager.registerService(
                 serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
+        Log.i(TAG, "registering  on port " + serviceInfo.getPort());
     }
 
     public void initializeRegistrationListener() {
@@ -45,6 +46,7 @@ public class RegisterNetworkService {
                 // with the name Android actually used.
                 serviceName = NsdServiceInfo.getServiceName();
                 Log.i(TAG, "service registered as " + serviceName);
+
             }
 
             @Override
@@ -63,6 +65,10 @@ public class RegisterNetworkService {
                 // Unregistration failed.  Put debugging code here to determine why.
             }
         };
+    }
+
+    public void tearDown(){
+        mNsdManager.unregisterService(mRegistrationListener);
     }
 
 }

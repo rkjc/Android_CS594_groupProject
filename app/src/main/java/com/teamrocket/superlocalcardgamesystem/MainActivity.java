@@ -1,5 +1,6 @@
 package com.teamrocket.superlocalcardgamesystem;
 
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,6 +39,8 @@ public class MainActivity extends ActionBarActivity {
     TextView info, infoIp;
     String message = "";
     String receivedMessage = "";
+    RegisterNetworkService registerNetworkService;
+    DiscoverNetworkService discoverNetworkService;
     ServerSocket serverSocket;
     ConnectedThread connectedThread;
     List<ConnectedThread> listThreads;
@@ -75,7 +79,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "setting up host thread");
-                RegisterNetworkService rns = new RegisterNetworkService(getApplicationContext());
+                registerNetworkService = new RegisterNetworkService(getApplicationContext());
                 threadType = Constants.HOST_THREAD;
                 Thread socketServerThread = new Thread(new SocketServerThread());
                 socketServerThread.start();
@@ -86,11 +90,15 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v){
                 Log.d(TAG, "setting up client thread");
-                threadType = Constants.CLIENT_THREAD;
-                String ipAddress = joinAddress.getText().toString();
-                Thread thread = new Thread(new SocketClientThread(ipAddress));
-                thread.start();
-                setupLobby();
+                Toast.makeText(getApplicationContext(), "searching for game to autojoin, please wait", Toast.LENGTH_LONG).show();
+                ServiceResolvedHandler serviceResolvedHandler = new ServiceResolvedHandlerImpl();
+                discoverNetworkService = new DiscoverNetworkService(getApplicationContext(), serviceResolvedHandler);
+
+//                threadType = Constants.CLIENT_THREAD;
+//                String ipAddress = joinAddress.getText().toString();
+//                Thread thread = new Thread(new SocketClientThread(ipAddress));
+//                thread.start();
+//                setupLobby();
             }
         });
         // testing global object MyApplication
@@ -110,6 +118,11 @@ public class MainActivity extends ActionBarActivity {
                 Log.e(TAG, "error on onDestroy() to close the socket", e);
             }
         }
+        if(registerNetworkService != null)
+            registerNetworkService.tearDown();
+        if(discoverNetworkService != null)
+            discoverNetworkService.tearDown();
+
     }
 
     public void setupLobby(){
@@ -135,6 +148,15 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
+
+    public void makeClientConnection(InetAddress ipAddress, int port){
+        threadType = Constants.CLIENT_THREAD;
+        Thread thread = new Thread(new SocketClientThread(ipAddress.getHostAddress(),port));
+        thread.start();
+        setupLobby();
+        Toast.makeText(getApplicationContext(), "entered the lobby", Toast.LENGTH_LONG).show();
+    }
+
 
     private class SocketServerThread extends Thread{
 
@@ -164,14 +186,17 @@ public class MainActivity extends ActionBarActivity {
 
     private class SocketClientThread extends Thread{
         String ipAddress;
-        public SocketClientThread(String ipAddress){
+        int port;
+        public SocketClientThread(String ipAddress, int port){
             this.ipAddress = ipAddress;
+//            this.port = Constants.PORT;
+            this.port = port;
         }
         @Override
         public void run(){
             Socket s;
             try{
-                s = new Socket(ipAddress, Constants.PORT);
+                s = new Socket(ipAddress, port);
                 connectedThread =  new ConnectedThread(s,0);
                 threadMap.put(new Integer(myApp.autoId), connectedThread);
                 connectedThread.start();
@@ -297,4 +322,33 @@ public class MainActivity extends ActionBarActivity {
             Log.e(TAG, "connectionLost() on socketId: " + socketId, e);
         }
     }
+
+    class ServiceResolvedHandlerImpl implements ServiceResolvedHandler {
+        public void onServiceResolved(final InetAddress address, final int port){
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    makeClientConnection(address, port);
+                }
+            });
+
+        }
+    }
 }
+
+interface ServiceResolvedHandler{
+    void onServiceResolved(InetAddress address, int port);
+}
+
+
+//class someClass{
+//    ServiceResolvedHandler handler;
+//    public void setHandlerListener(ServiceResolvedHandler listener){
+//        handler = listener;
+//    }
+//    public void eventFired(InetAddress address, int port){
+//        if(handler != null){
+//            handler.onServiceResolved(address, port);
+//        }
+//    }
+//}

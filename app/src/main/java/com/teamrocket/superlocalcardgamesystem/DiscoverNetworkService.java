@@ -1,5 +1,6 @@
 package com.teamrocket.superlocalcardgamesystem;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
@@ -18,12 +19,24 @@ public class DiscoverNetworkService {
     public NsdServiceInfo mService;
     public String mServiceName;
     public String SERVICE_TYPE = "_http._tcp.";
+    public ServiceResolvedHandler serviceResolvedHandler;
 
-    public DiscoverNetworkService(Context context){
+    public DiscoverNetworkService(Context context, ServiceResolvedHandler serviceResolvedHandler){
+        this.serviceResolvedHandler = serviceResolvedHandler;
         initializeDiscoveryListener();
         this.mNsdManager = (NsdManager)context.getSystemService(context.NSD_SERVICE);
         mNsdManager.discoverServices(
                 SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+        //initializeResolveListener();
+    }
+
+    public void setHandlerListener(ServiceResolvedHandler listener){
+        serviceResolvedHandler = listener;
+    }
+    public void eventFired(InetAddress address, int port){
+        if(serviceResolvedHandler != null){
+            serviceResolvedHandler.onServiceResolved(address, port);
+        }
     }
 
     public void initializeDiscoveryListener() {
@@ -49,7 +62,8 @@ public class DiscoverNetworkService {
                     // The name of the service tells the user what they'd be
                     // connecting to. It could be "Bob's Chat App".
                     Log.d(TAG, "Same machine: " + mServiceName);
-                } else if (service.getServiceName().contains("NsdChat")){
+                } else if (service.getServiceName().contains("SuperLocalCardGameSystem")){
+                    initializeResolveListener();
                     mNsdManager.resolveService(service, mResolveListener);
                 }
             }
@@ -99,8 +113,18 @@ public class DiscoverNetworkService {
                 }
                 mService = serviceInfo;
                 int port = mService.getPort();
+                Log.i(TAG, "service on port " + port);
+
                 InetAddress host = mService.getHost();
+                Log.i(TAG, "service on IP " + host.getHostAddress());
+                serviceResolvedHandler.onServiceResolved(host, port);
+                tearDown();
             }
         };
     }
+
+    public void tearDown(){
+        mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+    }
+
 }
