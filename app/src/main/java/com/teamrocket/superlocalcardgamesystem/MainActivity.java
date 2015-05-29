@@ -37,20 +37,17 @@ public class MainActivity extends ActionBarActivity {
     MyApplication myApp;
     private int threadType;
     TextView info, infoIp;
-    String message = "";
     String receivedMessage = "";
     RegisterNetworkService registerNetworkService;
     DiscoverNetworkService discoverNetworkService;
     ServerSocket serverSocket;
     ConnectedThread connectedThread;
-    List<ConnectedThread> listThreads;
     HashMap<Integer, ConnectedThread> threadMap;
     EditText editTextMessage, joinAddress;
     Button buttonSend, buttonStartGame, buttonHost, buttonClient;
     ArrayAdapter convoArrayAdapter;
     ListView convoView;
     ImageView iconView;
-    //PrintWriter out;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +65,6 @@ public class MainActivity extends ActionBarActivity {
         buttonHost = (Button)findViewById(R.id.host);
         buttonClient = (Button)findViewById(R.id.client);
         iconView = (ImageView)findViewById(R.id.splash_icon);
-        listThreads = new ArrayList<ConnectedThread>();
         threadMap = new HashMap<Integer, ConnectedThread>();
         setMultiWriteListener();
 
@@ -83,7 +79,7 @@ public class MainActivity extends ActionBarActivity {
                 threadType = Constants.HOST_THREAD;
                 Thread socketServerThread = new Thread(new SocketServerThread());
                 socketServerThread.start();
-                setupLobby();
+                setupHostLobby();
             }
         });
         buttonClient.setOnClickListener(new View.OnClickListener(){
@@ -93,12 +89,6 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), "searching for game to autojoin, please wait", Toast.LENGTH_LONG).show();
                 ServiceResolvedHandler serviceResolvedHandler = new ServiceResolvedHandlerImpl();
                 discoverNetworkService = new DiscoverNetworkService(getApplicationContext(), serviceResolvedHandler);
-
-//                threadType = Constants.CLIENT_THREAD;
-//                String ipAddress = joinAddress.getText().toString();
-//                Thread thread = new Thread(new SocketClientThread(ipAddress));
-//                thread.start();
-//                setupLobby();
             }
         });
         // testing global object MyApplication
@@ -125,9 +115,19 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    public void setupLobby(){
+    public void setupHostLobby(){
         buttonSend.setVisibility(View.VISIBLE);
         buttonStartGame.setVisibility(View.VISIBLE);
+        buttonClient.setVisibility(View.GONE);
+        buttonHost.setVisibility(View.GONE);
+        info.setVisibility(View.VISIBLE);
+        editTextMessage.setVisibility(View.VISIBLE);
+        joinAddress.setVisibility(View.GONE);
+        iconView.setVisibility(View.GONE);
+    }
+
+    public void setupClientLobby(){
+        buttonSend.setVisibility(View.VISIBLE);
         buttonClient.setVisibility(View.GONE);
         buttonHost.setVisibility(View.GONE);
         info.setVisibility(View.VISIBLE);
@@ -153,8 +153,8 @@ public class MainActivity extends ActionBarActivity {
         threadType = Constants.CLIENT_THREAD;
         Thread thread = new Thread(new SocketClientThread(ipAddress.getHostAddress(),port));
         thread.start();
-        setupLobby();
-        Toast.makeText(getApplicationContext(), "entered the lobby", Toast.LENGTH_LONG).show();
+        setupClientLobby();
+        Toast.makeText(getApplicationContext(), "entered the lobby", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -189,7 +189,6 @@ public class MainActivity extends ActionBarActivity {
         int port;
         public SocketClientThread(String ipAddress, int port){
             this.ipAddress = ipAddress;
-//            this.port = Constants.PORT;
             this.port = port;
         }
         @Override
@@ -240,7 +239,7 @@ public class MainActivity extends ActionBarActivity {
             if(threadType == Constants.HOST_THREAD){
                 String msgReply = "Entered the game lobby as player: " + socketId;
                 write(msgReply);
-                while (true && connectionStatus == Constants.CONNECTED) {
+                while (connectionStatus == Constants.CONNECTED) {
                     try {
                         receivedMessage = in.readLine();
                         if(receivedMessage == null && connectionStatus == Constants.CONNECTED){ // the socket was lost
@@ -251,10 +250,7 @@ public class MainActivity extends ActionBarActivity {
                             MainActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Integer[] keys = threadMap.keySet().toArray( new Integer[0] );
-                                    for(Integer key: keys ){
-                                        threadMap.get(key).write(receivedMessage);
-                                    }
+                                    writeToGroup(receivedMessage);
                                     convoArrayAdapter.add(receivedMessage);
                                 }
                             });
@@ -284,6 +280,12 @@ public class MainActivity extends ActionBarActivity {
         }
         public void write(String msgReply) {
             out.println(msgReply);
+        }
+        public void writeToGroup(String msgReply){
+            Integer[] keys = threadMap.keySet().toArray( new Integer[0] );
+            for(Integer key: keys ){
+                threadMap.get(key).write(msgReply);
+            }
         }
     }
 
@@ -335,20 +337,3 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 }
-
-interface ServiceResolvedHandler{
-    void onServiceResolved(InetAddress address, int port);
-}
-
-
-//class someClass{
-//    ServiceResolvedHandler handler;
-//    public void setHandlerListener(ServiceResolvedHandler listener){
-//        handler = listener;
-//    }
-//    public void eventFired(InetAddress address, int port){
-//        if(handler != null){
-//            handler.onServiceResolved(address, port);
-//        }
-//    }
-//}
