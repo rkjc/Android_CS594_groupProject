@@ -3,8 +3,12 @@ package com.teamrocket.superlocalcardgamesystem;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -144,6 +148,22 @@ public class MainActivity extends ActionBarActivity {
 				editTextMessage.setText("");
 			}
 		});
+
+        editTextMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_GO){
+                    Log.i(TAG, "pressed enter");
+                    Integer[] keys = threadMap.keySet().toArray(new Integer[0]);
+                    for (Integer key : keys) {
+                        threadMap.get(key).write(editTextMessage.getText().toString());
+                    }
+                    editTextMessage.setText("");
+                    return true;
+                }
+                return false;
+            }
+        });
 	}
 
 	public void makeClientConnection(InetAddress ipAddress, int port) {
