@@ -227,63 +227,63 @@ public class MainActivity extends ActionBarActivity {
 			outputStream = tmpOut;
 		}
 
-		@Override
-		public void run() {
-			out = new PrintWriter(outputStream, true);
-			in = new BufferedReader(new InputStreamReader(inputStream));
-			if (threadType == Constants.HOST_THREAD) {
-				String msgReply = "Entered the game lobby as player: " + socketId;
-				write(msgReply);
-				while (connectionStatus == Constants.CONNECTED) {
-					try {
-						receivedMessage = in.readLine();
-						if (receivedMessage == null &&
-								connectionStatus == Constants.CONNECTED) { // the socket was lost
-							connectionStatus = Constants.DISCONNECTED;
-							connectionLost(socketId, this);
-						} else if (receivedMessage != null) {
-							MainActivity.this.runOnUiThread(new Runnable() {
-								@Override
-								public void run() {
-									writeToGroup(receivedMessage);
-									convoArrayAdapter.add(receivedMessage);
-								}
-							});
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-						break;
-					}
-				}
-			} else if (threadType == Constants.CLIENT_THREAD) {
-				while (true) {
-					try {
-						receivedMessage = in.readLine();
-						MainActivity.this.runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								convoArrayAdapter.add(receivedMessage);
-							}
-						});
-					} catch (IOException e) {
-						e.printStackTrace();
-						break;
-					}
-				}
-			}
-		}
-
-		public void write(String msgReply) {
-			out.println(msgReply);
-		}
-
-		public void writeToGroup(String msgReply) {
-			Integer[] keys = threadMap.keySet().toArray(new Integer[0]);
-			for (Integer key : keys) {
-				threadMap.get(key).write(msgReply);
-			}
-		}
-	}
+        @Override
+        public void run() {
+            out = new PrintWriter(outputStream,true);
+            in = new BufferedReader( new InputStreamReader(inputStream));
+            if(threadType == Constants.HOST_THREAD){
+                String msgReply = "Entered the game lobby as player: " + socketId;
+                write(msgReply);
+                while (connectionStatus == Constants.CONNECTED) {
+                    try {
+                        receivedMessage = in.readLine();
+                        if(receivedMessage == null && connectionStatus == Constants.CONNECTED){ // the socket was lost
+                            connectionStatus = Constants.DISCONNECTED;
+                            connectionLost(socketId, this);
+                        }
+                        else if(receivedMessage != null){
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String groupMessage = socketId + ": " + receivedMessage;
+                                    writeToGroup(groupMessage);
+                                    convoArrayAdapter.add(groupMessage);
+                                }
+                            });
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        break;
+                    }
+                }
+            }
+            else if(threadType == Constants.CLIENT_THREAD){
+                while (true) {
+                    try {
+                        receivedMessage = in.readLine();
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                convoArrayAdapter.add(receivedMessage);
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        break;
+                    }
+                }
+            }
+        }
+        public void write(String msgReply) {
+            out.println(msgReply);
+        }
+        public void writeToGroup(String msgReply){
+            Integer[] keys = threadMap.keySet().toArray( new Integer[0] );
+            for(Integer key: keys ){
+                threadMap.get(key).write(msgReply);
+            }
+        }
+    }
 
 	private String getIpAddress() {
 		String ip = "";
@@ -319,6 +319,7 @@ public class MainActivity extends ActionBarActivity {
 			Log.e(TAG, "connectionLost() on socketId: " + socketId, e);
 		}
 	}
+
 
 	class ServiceResolvedHandlerImpl implements ServiceResolvedHandler {
 		public void onServiceResolved(final InetAddress address, final int port) {
