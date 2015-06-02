@@ -167,15 +167,23 @@ public class MainActivity extends ActionBarActivity {
 				});
 				while (true) {
 					Socket socket = serverSocket.accept();
-					myApp.autoId++;
-					connectedThread = new ConnectedThread(socket, myApp.autoId);
-					threadMap.put(new Integer(myApp.autoId), connectedThread);
-					connectedThread.start();
+                    if(hasMaxPlayers()){
+                        socket.close();
+                    }
+                    else {
+                        myApp.autoId++;
+                        connectedThread = new ConnectedThread(socket, myApp.autoId);
+                        threadMap.put(new Integer(myApp.autoId), connectedThread);
+                        connectedThread.start();
+                    }
 				}
 			} catch (IOException e) {
 				Log.e(TAG, "exception in SocketServerThread", e);
 			}
 		}
+        public boolean hasMaxPlayers(){
+            return threadMap.keySet().size() > Constants.MAX_CLIENTS - 1;
+        }
 	}
 
 	private class SocketClientThread extends Thread {

@@ -12,4 +12,6 @@ public interface Constants {
 
 	public static final int CONNECTED = 0;
 	public static final int DISCONNECTED = 1;
+
+    public static final int MAX_CLIENTS = 3;
 }
