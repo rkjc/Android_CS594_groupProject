@@ -19,8 +19,10 @@ public class DiscoverNetworkService {
 	public String mServiceName;
 	public String SERVICE_TYPE = "_http._tcp.";
 	public ServiceResolvedHandler serviceResolvedHandler;
+    public String roomName;
 
-	public DiscoverNetworkService(Context context, ServiceResolvedHandler serviceResolvedHandler) {
+	public DiscoverNetworkService(Context context, ServiceResolvedHandler serviceResolvedHandler, String roomName) {
+        this.roomName = Constants.SERVICE_DISCOVERY_NAME+ roomName;
 		this.serviceResolvedHandler = serviceResolvedHandler;
 		initializeDiscoveryListener();
 		this.mNsdManager = (NsdManager) context.getSystemService(context.NSD_SERVICE);
@@ -60,7 +62,7 @@ public class DiscoverNetworkService {
 					// The name of the service tells the user what they'd be
 					// connecting to. It could be "Bob's Chat App".
 					Log.d(TAG, "Same machine: " + mServiceName);
-				} else if (service.getServiceName().contains("SuperLocalCardGameSystem")) {
+				} else if (service.getServiceName().contains(roomName)) {
 					initializeResolveListener();
 					mNsdManager.resolveService(service, mResolveListener);
 				}

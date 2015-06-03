@@ -10,8 +10,8 @@
     android:background="@color/background">
 
 
-    <EditText android:id="@+id/join_address"
-        android:text="@string/addressDefault"
+    <EditText android:id="@+id/join_room_name"
+        android:text="@string/roomName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <EditText android:id="@+id/message"
@@ -61,6 +61,11 @@
             android:text="IPinfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/roomNameText"
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
 
     <ImageView android:id="@+id/splash_icon"

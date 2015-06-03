@@ -14,8 +14,8 @@ public class RegisterNetworkService {
 	NsdManager.RegistrationListener mRegistrationListener;
 	NsdManager mNsdManager;
 
-	public RegisterNetworkService(Context context) {
-		serviceName = context.getString(R.string.serviceDiscoveryName);
+	public RegisterNetworkService(Context context, String roomName) {
+		serviceName = Constants.SERVICE_DISCOVERY_NAME + roomName;
 		initializeRegistrationListener();
 		registerService(Constants.SERVICE_PORT, context);
 	}

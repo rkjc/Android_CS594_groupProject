@@ -3,8 +3,6 @@ package com.teamrocket.superlocalcardgamesystem;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -36,14 +34,14 @@ public class MainActivity extends ActionBarActivity {
 	private final String TAG = "MainActivity";
 	MyApplication myApp;
 	private int threadType;
-	TextView info, infoIp;
+	TextView info, infoIp, roomNameText;
 	String receivedMessage = "";
 	RegisterNetworkService registerNetworkService;
 	DiscoverNetworkService discoverNetworkService;
 	ServerSocket serverSocket;
 	ConnectedThread connectedThread;
 	HashMap<Integer, ConnectedThread> threadMap;
-	EditText editTextMessage, joinAddress;
+	EditText editTextMessage, joinRoomName;
 	Button buttonSend, buttonStartGame, buttonHost, buttonClient;
 	ArrayAdapter convoArrayAdapter;
 	ListView convoView;
@@ -55,11 +53,12 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_main);
 		info = (TextView) findViewById(R.id.info);
 		infoIp = (TextView) findViewById(R.id.infoip);
+        roomNameText= (TextView) findViewById(R.id.roomNameText);
 		convoArrayAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.message);
 		convoView = (ListView) findViewById(R.id.convo);
 		convoView.setAdapter(convoArrayAdapter);
 		editTextMessage = (EditText) findViewById(R.id.message);
-		joinAddress = (EditText) findViewById(R.id.join_address);
+		joinRoomName = (EditText) findViewById(R.id.join_room_name);
 		buttonSend = (Button) findViewById(R.id.send);
 		buttonStartGame = (Button) findViewById(R.id.start_game);
 		buttonHost = (Button) findViewById(R.id.host);
@@ -75,7 +74,9 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "setting up host thread");
-				registerNetworkService = new RegisterNetworkService(getApplicationContext());
+                String roomName = joinRoomName.getText().toString();
+				registerNetworkService = new RegisterNetworkService(getApplicationContext(), roomName);
+                roomNameText.setText(roomName);
 				threadType = Constants.HOST_THREAD;
 				Thread socketServerThread = new Thread(new SocketServerThread());
 				socketServerThread.start();
@@ -87,11 +88,13 @@ public class MainActivity extends ActionBarActivity {
 			public void onClick(View v) {
 				Log.d(TAG, "setting up client thread");
 				Toast.makeText(getApplicationContext(),
-						"searching for game to autojoin, please wait", Toast.LENGTH_LONG)
+						"searching for game to join, please wait", Toast.LENGTH_LONG)
 						.show();
+                String roomName = joinRoomName.getText().toString();
 				ServiceResolvedHandler serviceResolvedHandler = new ServiceResolvedHandlerImpl();
 				discoverNetworkService = new DiscoverNetworkService(getApplicationContext(),
-						serviceResolvedHandler);
+						serviceResolvedHandler, roomName );
+                roomNameText.setText(roomName);
 			}
 		});
 		// testing global object MyApplication
@@ -122,8 +125,9 @@ public class MainActivity extends ActionBarActivity {
 		buttonClient.setVisibility(View.GONE);
 		buttonHost.setVisibility(View.GONE);
 		info.setVisibility(View.VISIBLE);
+        roomNameText.setVisibility(View.VISIBLE);
 		editTextMessage.setVisibility(View.VISIBLE);
-		joinAddress.setVisibility(View.GONE);
+		joinRoomName.setVisibility(View.GONE);
 		iconView.setVisibility(View.GONE);
 	}
 
@@ -132,8 +136,9 @@ public class MainActivity extends ActionBarActivity {
 		buttonClient.setVisibility(View.GONE);
 		buttonHost.setVisibility(View.GONE);
 		info.setVisibility(View.VISIBLE);
+        roomNameText.setVisibility(View.VISIBLE);
 		editTextMessage.setVisibility(View.VISIBLE);
-		joinAddress.setVisibility(View.GONE);
+		joinRoomName.setVisibility(View.GONE);
 		iconView.setVisibility(View.GONE);
 	}
 
