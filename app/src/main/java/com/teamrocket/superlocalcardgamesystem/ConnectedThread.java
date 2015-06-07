@@ -61,7 +61,6 @@ public class ConnectedThread extends Thread {
                             public void run() {
                                 String groupMessage = socketId + ": " + receivedMessage;
                                 writeToGroup(groupMessage);
-//                                convoArrayAdapter.add(groupMessage);
                                 currentActivity.handleReceivedMessage(groupMessage);
                             }
                         });
@@ -79,7 +78,6 @@ public class ConnectedThread extends Thread {
                     currentActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            convoArrayAdapter.add(receivedMessage);
                             currentActivity.handleReceivedMessage(receivedMessage);
                         }
                     });
@@ -108,9 +106,9 @@ public class ConnectedThread extends Thread {
             MyApplication.threadMap.remove(id);
             lostThread.connectedSocket.close();
             connectedHostThread.connectedSocket.close();
-//            Log.i(TAG, "closed socket for player: " + id.toString());
+            Log.i(TAG, "closed socket for player: " + id.toString());
         } catch (IOException e) {
-//            Log.e(TAG, "connectionLost() on socketId: " + socketId, e);
+            Log.e(TAG, "connectionLost() on socketId: " + socketId, e);
         }
     }
 }
