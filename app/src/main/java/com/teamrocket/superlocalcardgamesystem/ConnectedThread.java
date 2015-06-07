@@ -2,6 +2,9 @@ package com.teamrocket.superlocalcardgamesystem;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +50,10 @@ public class ConnectedThread extends Thread {
         in = new BufferedReader( new InputStreamReader(inputStream));
         if(threadType == Constants.HOST_THREAD){
             String msgReply = "Entered the game lobby as player: " + socketId;
+
+            // need to inform player what their id is
             write(msgReply);
+            write(prepareIdJSON(socketId));
             while (connectionStatus == Constants.CONNECTED) {
                 try {
                     receivedMessage = in.readLine();
@@ -91,11 +97,25 @@ public class ConnectedThread extends Thread {
     public void write(String msgReply) {
         out.println(msgReply);
     }
+
     public void writeToGroup(String msgReply){
         Integer[] keys = MyApplication.threadMap.keySet().toArray( new Integer[0] );
         for(Integer key: keys ){
             MyApplication.threadMap.get(key).write(msgReply);
         }
+    }
+
+    public String prepareIdJSON(int id){
+        try{
+            JSONObject json = new JSONObject();
+            json.put("playerId", id);
+            Log.i(TAG, "sent player id as json: "+ json.toString());
+            return json.toString();
+        }
+        catch (JSONException e){
+            Log.e(TAG, "prepareIdJSON", e);
+        }
+        return "";
     }
 
     private void connectionLost(int socketId, ConnectedThread connectedHostThread) {

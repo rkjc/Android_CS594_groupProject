@@ -1,9 +1,8 @@
 package com.teamrocket.superlocalcardgamesystem;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,32 +15,29 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.util.HashMap;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends ThreadHandlingActivity {
 	private final String TAG = "MainActivity";
-	MyApplication myApp;
-	private int threadType;
-	TextView info, infoIp, roomNameText;
-	String receivedMessage = "";
+
+    private int threadType;
 	RegisterNetworkService registerNetworkService;
 	DiscoverNetworkService discoverNetworkService;
 	ServerSocket serverSocket;
 	ConnectedThread connectedThread;
-//	HashMap<Integer, ConnectedThread> threadMap;
+
+    // UI elements
+    TextView info, infoIp, roomNameText;
 	EditText editTextMessage, joinRoomName;
 	Button buttonSend, buttonStartGame, buttonHost, buttonClient;
 	ArrayAdapter convoArrayAdapter;
@@ -65,7 +61,7 @@ public class MainActivity extends ThreadHandlingActivity {
 		buttonHost = (Button) findViewById(R.id.host);
 		buttonClient = (Button) findViewById(R.id.client);
 		iconView = (ImageView) findViewById(R.id.splash_icon);
-//		threadMap = new HashMap<Integer, ConnectedThread>();
+
 		setMultiWriteListener();
 
 		infoIp.setText(getIpAddress());
@@ -98,9 +94,14 @@ public class MainActivity extends ThreadHandlingActivity {
                 roomNameText.setText(roomName);
 			}
 		});
-		// testing global object MyApplication
-//		myApp = (MyApplication) getApplication();
-//		Log.i(TAG, myApp.getNum() + "");
+
+        buttonStartGame.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(MainActivity.this, CardplayPlaceholderActivity.class);
+                startActivity(intent);
+            }
+        });
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
@@ -147,11 +148,7 @@ public class MainActivity extends ThreadHandlingActivity {
 		buttonSend.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
-				for (Integer key : keys) {
-                    MyApplication.threadMap.get(key).write(editTextMessage.getText().toString());
-				}
-				editTextMessage.setText("");
+				writeToThreads();
 			}
 		});
 
@@ -159,12 +156,7 @@ public class MainActivity extends ThreadHandlingActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_GO){
-                    Log.i(TAG, "pressed enter");
-                    Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
-                    for (Integer key : keys) {
-                        MyApplication.threadMap.get(key).write(editTextMessage.getText().toString());
-                    }
-                    editTextMessage.setText("");
+                    writeToThreads();
                     return true;
                 }
                 return false;
@@ -172,8 +164,32 @@ public class MainActivity extends ThreadHandlingActivity {
         });
 	}
 
+    public void writeToThreads(){
+        Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
+        for (Integer key : keys) {
+            MyApplication.threadMap.get(key).write(editTextMessage.getText().toString());
+        }
+        editTextMessage.setText("");
+    }
+
     public void handleReceivedMessage(String message){
-        convoArrayAdapter.add(message);
+        // check if it is a JSON command
+        //
+        try {
+            JSONObject update = new JSONObject(message);
+            if(update.has("playerId")){
+                MyApplication.setPlayerId( update.getInt("playerId") );
+                Log.i(TAG, "updated playerId to " + MyApplication.getPlayerId() );
+            }
+        }
+        catch(JSONException e){
+            convoArrayAdapter.add(message);
+        }
+
+    }
+
+    public void handleWrittenMessage(String message){
+        ;
     }
 
 	public void makeClientConnection(InetAddress ipAddress, int port) {
@@ -189,6 +205,7 @@ public class MainActivity extends ThreadHandlingActivity {
 		public void run() {
 			try {
 				serverSocket = new ServerSocket(Constants.PORT);
+                MyApplication.setPlayerId(0);
 				MainActivity.this.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {

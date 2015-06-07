@@ -8,16 +8,21 @@ import java.util.HashMap;
  * Created by tj on 5/21/15.
  */
 public class MyApplication extends Application {
-	public static int num = 1;
-	public static int autoId = -1;
+	public static int autoId = 0;
     public static HashMap<Integer, ConnectedThread> threadMap = new HashMap<Integer, ConnectedThread>();
+    public static int playerId;
 
-	public int getNum() {
-		return num;
-	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 	}
+
+    public static int getPlayerId() {
+        return playerId;
+    }
+
+    public static void setPlayerId(int playerId) {
+        MyApplication.playerId = playerId;
+    }
 }
