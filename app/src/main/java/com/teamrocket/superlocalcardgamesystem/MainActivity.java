@@ -1,5 +1,6 @@
 package com.teamrocket.superlocalcardgamesystem;
 
+import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -30,7 +31,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 
 @SuppressWarnings("deprecation")
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ThreadHandlingActivity {
 	private final String TAG = "MainActivity";
 	MyApplication myApp;
 	private int threadType;
@@ -40,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
 	DiscoverNetworkService discoverNetworkService;
 	ServerSocket serverSocket;
 	ConnectedThread connectedThread;
-	HashMap<Integer, ConnectedThread> threadMap;
+//	HashMap<Integer, ConnectedThread> threadMap;
 	EditText editTextMessage, joinRoomName;
 	Button buttonSend, buttonStartGame, buttonHost, buttonClient;
 	ArrayAdapter convoArrayAdapter;
@@ -64,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
 		buttonHost = (Button) findViewById(R.id.host);
 		buttonClient = (Button) findViewById(R.id.client);
 		iconView = (ImageView) findViewById(R.id.splash_icon);
-		threadMap = new HashMap<Integer, ConnectedThread>();
+//		threadMap = new HashMap<Integer, ConnectedThread>();
 		setMultiWriteListener();
 
 		infoIp.setText(getIpAddress());
@@ -98,8 +99,8 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 		// testing global object MyApplication
-		myApp = (MyApplication) getApplication();
-		Log.i(TAG, myApp.getNum() + "");
+//		myApp = (MyApplication) getApplication();
+//		Log.i(TAG, myApp.getNum() + "");
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
@@ -146,9 +147,9 @@ public class MainActivity extends ActionBarActivity {
 		buttonSend.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Integer[] keys = threadMap.keySet().toArray(new Integer[0]);
+				Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
 				for (Integer key : keys) {
-					threadMap.get(key).write(editTextMessage.getText().toString());
+                    MyApplication.threadMap.get(key).write(editTextMessage.getText().toString());
 				}
 				editTextMessage.setText("");
 			}
@@ -159,9 +160,9 @@ public class MainActivity extends ActionBarActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_GO){
                     Log.i(TAG, "pressed enter");
-                    Integer[] keys = threadMap.keySet().toArray(new Integer[0]);
+                    Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
                     for (Integer key : keys) {
-                        threadMap.get(key).write(editTextMessage.getText().toString());
+                        MyApplication.threadMap.get(key).write(editTextMessage.getText().toString());
                     }
                     editTextMessage.setText("");
                     return true;
@@ -170,6 +171,10 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 	}
+
+    public void handleReceivedMessage(String message){
+        convoArrayAdapter.add(message);
+    }
 
 	public void makeClientConnection(InetAddress ipAddress, int port) {
 		threadType = Constants.CLIENT_THREAD;
@@ -196,9 +201,9 @@ public class MainActivity extends ActionBarActivity {
                         socket.close();
                     }
                     else {
-                        myApp.autoId++;
-                        connectedThread = new ConnectedThread(socket, myApp.autoId);
-                        threadMap.put(new Integer(myApp.autoId), connectedThread);
+                        MyApplication.autoId++;
+                        connectedThread = new ConnectedThread(socket, MyApplication.autoId, threadType, MainActivity.this);
+                        MyApplication.threadMap.put(new Integer(MyApplication.autoId), connectedThread);
                         connectedThread.start();
                     }
 				}
@@ -207,7 +212,7 @@ public class MainActivity extends ActionBarActivity {
 			}
 		}
         public boolean hasMaxPlayers(){
-            return threadMap.keySet().size() > Constants.MAX_CLIENTS - 1;
+            return MyApplication.threadMap.keySet().size() > Constants.MAX_CLIENTS - 1;
         }
 	}
 
@@ -225,8 +230,8 @@ public class MainActivity extends ActionBarActivity {
 			Socket s;
 			try {
 				s = new Socket(ipAddress, port);
-				connectedThread = new ConnectedThread(s, 0);
-				threadMap.put(new Integer(myApp.autoId), connectedThread);
+				connectedThread = new ConnectedThread(s, 0, threadType, MainActivity.this);
+                MyApplication.threadMap.put(new Integer(MyApplication.autoId), connectedThread);
 				connectedThread.start();
 			} catch (IOException e) {
 				Log.e(TAG, "exception in SocketClientThread", e);
@@ -235,88 +240,88 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	private class ConnectedThread extends Thread {
-		private Socket connectedSocket;
-		int socketId;
-		int connectionStatus;
-		OutputStream outputStream;
-		PrintWriter out;
-		InputStream inputStream;
-		BufferedReader in;
-
-		ConnectedThread(Socket socket, int id) {
-			connectedSocket = socket;
-			socketId = id;
-			connectionStatus = Constants.CONNECTED;
-			InputStream tmpIn = null;
-			OutputStream tmpOut = null;
-			try {
-				tmpIn = connectedSocket.getInputStream();
-				tmpOut = connectedSocket.getOutputStream();
-			} catch (IOException e) {
-				Log.e(TAG, "temp sockets not created", e);
-			}
-			inputStream = tmpIn;
-			outputStream = tmpOut;
-		}
-
-        @Override
-        public void run() {
-            out = new PrintWriter(outputStream,true);
-            in = new BufferedReader( new InputStreamReader(inputStream));
-            if(threadType == Constants.HOST_THREAD){
-                String msgReply = "Entered the game lobby as player: " + socketId;
-                write(msgReply);
-                while (connectionStatus == Constants.CONNECTED) {
-                    try {
-                        receivedMessage = in.readLine();
-                        if(receivedMessage == null && connectionStatus == Constants.CONNECTED){ // the socket was lost
-                            connectionStatus = Constants.DISCONNECTED;
-                            connectionLost(socketId, this);
-                        }
-                        else if(receivedMessage != null){
-                            MainActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    String groupMessage = socketId + ": " + receivedMessage;
-                                    writeToGroup(groupMessage);
-                                    convoArrayAdapter.add(groupMessage);
-                                }
-                            });
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        break;
-                    }
-                }
-            }
-            else if(threadType == Constants.CLIENT_THREAD){
-                while (true) {
-                    try {
-                        receivedMessage = in.readLine();
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                convoArrayAdapter.add(receivedMessage);
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        break;
-                    }
-                }
-            }
-        }
-        public void write(String msgReply) {
-            out.println(msgReply);
-        }
-        public void writeToGroup(String msgReply){
-            Integer[] keys = threadMap.keySet().toArray( new Integer[0] );
-            for(Integer key: keys ){
-                threadMap.get(key).write(msgReply);
-            }
-        }
-    }
+//	public class ConnectedThread extends Thread {
+//		private Socket connectedSocket;
+//		int socketId;
+//		int connectionStatus;
+//		OutputStream outputStream;
+//		PrintWriter out;
+//		InputStream inputStream;
+//		BufferedReader in;
+//
+//		ConnectedThread(Socket socket, int id) {
+//			connectedSocket = socket;
+//			socketId = id;
+//			connectionStatus = Constants.CONNECTED;
+//			InputStream tmpIn = null;
+//			OutputStream tmpOut = null;
+//			try {
+//				tmpIn = connectedSocket.getInputStream();
+//				tmpOut = connectedSocket.getOutputStream();
+//			} catch (IOException e) {
+//				Log.e(TAG, "temp sockets not created", e);
+//			}
+//			inputStream = tmpIn;
+//			outputStream = tmpOut;
+//		}
+//
+//        @Override
+//        public void run() {
+//            out = new PrintWriter(outputStream,true);
+//            in = new BufferedReader( new InputStreamReader(inputStream));
+//            if(threadType == Constants.HOST_THREAD){
+//                String msgReply = "Entered the game lobby as player: " + socketId;
+//                write(msgReply);
+//                while (connectionStatus == Constants.CONNECTED) {
+//                    try {
+//                        receivedMessage = in.readLine();
+//                        if(receivedMessage == null && connectionStatus == Constants.CONNECTED){ // the socket was lost
+//                            connectionStatus = Constants.DISCONNECTED;
+//                            connectionLost(socketId, this);
+//                        }
+//                        else if(receivedMessage != null){
+//                            MainActivity.this.runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    String groupMessage = socketId + ": " + receivedMessage;
+//                                    writeToGroup(groupMessage);
+//                                    convoArrayAdapter.add(groupMessage);
+//                                }
+//                            });
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                        break;
+//                    }
+//                }
+//            }
+//            else if(threadType == Constants.CLIENT_THREAD){
+//                while (true) {
+//                    try {
+//                        receivedMessage = in.readLine();
+//                        MainActivity.this.runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                convoArrayAdapter.add(receivedMessage);
+//                            }
+//                        });
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        public void write(String msgReply) {
+//            out.println(msgReply);
+//        }
+//        public void writeToGroup(String msgReply){
+//            Integer[] keys = threadMap.keySet().toArray( new Integer[0] );
+//            for(Integer key: keys ){
+//                threadMap.get(key).write(msgReply);
+//            }
+//        }
+//    }
 
 	private String getIpAddress() {
 		String ip = "";
@@ -339,19 +344,19 @@ public class MainActivity extends ActionBarActivity {
 		return ip;
 	}
 
-	private void connectionLost(int socketId, ConnectedThread connectedHostThread) {
-		// Send a failure message
-		Integer id = new Integer(socketId);
-		try {
-			ConnectedThread lostThread = threadMap.get(id);
-			threadMap.remove(id);
-			lostThread.connectedSocket.close();
-			connectedHostThread.connectedSocket.close();
-			Log.i(TAG, "closed socket for player: " + id.toString());
-		} catch (IOException e) {
-			Log.e(TAG, "connectionLost() on socketId: " + socketId, e);
-		}
-	}
+//	private void connectionLost(int socketId, ConnectedThread connectedHostThread) {
+//		// Send a failure message
+//		Integer id = new Integer(socketId);
+//		try {
+//			ConnectedThread lostThread = threadMap.get(id);
+//			threadMap.remove(id);
+//			lostThread.connectedSocket.close();
+//			connectedHostThread.connectedSocket.close();
+//			Log.i(TAG, "closed socket for player: " + id.toString());
+//		} catch (IOException e) {
+//			Log.e(TAG, "connectionLost() on socketId: " + socketId, e);
+//		}
+//	}
 
 
 	class ServiceResolvedHandlerImpl implements ServiceResolvedHandler {
@@ -365,3 +370,107 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 }
+
+//public class ConnectedThread extends Thread {
+//    private Socket connectedSocket;
+//    int socketId;
+//    int connectionStatus;
+//    int threadType;
+//    String receivedMessage;
+//    OutputStream outputStream;
+//    PrintWriter out;
+//    InputStream inputStream;
+//    BufferedReader in;
+//    ThreadHandlingActivity currentActivity;
+//
+//    ConnectedThread(Socket socket, int id, int threadType, ThreadHandlingActivity activity) {
+//        this.threadType = threadType;
+//        this.currentActivity = activity;
+//        connectedSocket = socket;
+//        socketId = id;
+//        connectionStatus = Constants.CONNECTED;
+//        InputStream tmpIn = null;
+//        OutputStream tmpOut = null;
+//        try {
+//            tmpIn = connectedSocket.getInputStream();
+//            tmpOut = connectedSocket.getOutputStream();
+//        } catch (IOException e) {
+//            //Log.e(TAG, "temp sockets not created", e);
+//        }
+//        inputStream = tmpIn;
+//        outputStream = tmpOut;
+//    }
+//
+//    @Override
+//    public void run() {
+//        out = new PrintWriter(outputStream,true);
+//        in = new BufferedReader( new InputStreamReader(inputStream));
+//        if(threadType == Constants.HOST_THREAD){
+//            String msgReply = "Entered the game lobby as player: " + socketId;
+//            write(msgReply);
+//            while (connectionStatus == Constants.CONNECTED) {
+//                try {
+//                    receivedMessage = in.readLine();
+//                    if(receivedMessage == null && connectionStatus == Constants.CONNECTED){ // the socket was lost
+//                        connectionStatus = Constants.DISCONNECTED;
+//                        connectionLost(socketId, this);
+//                    }
+//                    else if(receivedMessage != null){
+//                        currentActivity.runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                String groupMessage = socketId + ": " + receivedMessage;
+//                                writeToGroup(groupMessage);
+////                                convoArrayAdapter.add(groupMessage);
+//                                currentActivity.handleReceivedMessage(groupMessage);
+//                            }
+//                        });
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    break;
+//                }
+//            }
+//        }
+//        else if(threadType == Constants.CLIENT_THREAD){
+//            while (true) {
+//                try {
+//                    receivedMessage = in.readLine();
+//                    currentActivity.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+////                            convoArrayAdapter.add(receivedMessage);
+//                            currentActivity.handleReceivedMessage(receivedMessage);
+//                        }
+//                    });
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//    public void write(String msgReply) {
+//        out.println(msgReply);
+//    }
+//    public void writeToGroup(String msgReply){
+//        Integer[] keys = MyApplication.threadMap.keySet().toArray( new Integer[0] );
+//        for(Integer key: keys ){
+//            MyApplication.threadMap.get(key).write(msgReply);
+//        }
+//    }
+//
+//    private void connectionLost(int socketId, ConnectedThread connectedHostThread) {
+//        // Send a failure message
+//        Integer id = new Integer(socketId);
+//        try {
+//            ConnectedThread lostThread = MyApplication.threadMap.get(id);
+//            MyApplication.threadMap.remove(id);
+//            lostThread.connectedSocket.close();
+//            connectedHostThread.connectedSocket.close();
+////            Log.i(TAG, "closed socket for player: " + id.toString());
+//        } catch (IOException e) {
+////            Log.e(TAG, "connectionLost() on socketId: " + socketId, e);
+//        }
+//    }
+//}
