@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ConnectedThread extends Thread {
-    private final String TAG = "MainActivity";
+    public static final String TAG = "ConnectedThread";
     private Socket connectedSocket;
     int socketId;
     int connectionStatus;
@@ -49,10 +49,10 @@ public class ConnectedThread extends Thread {
         out = new PrintWriter(outputStream,true);
         in = new BufferedReader( new InputStreamReader(inputStream));
         if(threadType == Constants.HOST_THREAD){
-            String msgReply = "Entered the game lobby as player: " + socketId;
+            String msgReply = "Player: " + socketId + " has entered";
 
             // need to inform player what their id is
-            write(msgReply);
+            writeToGroup(msgReply);
             write(prepareIdJSON(socketId));
             while (connectionStatus == Constants.CONNECTED) {
                 try {
@@ -65,7 +65,7 @@ public class ConnectedThread extends Thread {
                         currentActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                String groupMessage = socketId + ": " + receivedMessage;
+                                String groupMessage = receivedMessage;
                                 writeToGroup(groupMessage);
                                 currentActivity.handleReceivedMessage(groupMessage);
                             }
@@ -95,7 +95,7 @@ public class ConnectedThread extends Thread {
         }
     }
     public void write(String msgReply) {
-        out.println(msgReply);
+        out.println( currentActivity.handleWrittenMessage(msgReply) );
     }
 
     public void writeToGroup(String msgReply){

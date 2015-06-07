@@ -10,6 +10,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by tj on 6/6/15.
  */
@@ -18,10 +21,13 @@ public class CardplayPlaceholderActivity extends ThreadHandlingActivity {
     Button buttonSend;
     ArrayAdapter convoArrayAdapter;
     ListView convoView;
+    int threadType;
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cardplay_placeholder);
+
+        threadType = getIntent().getExtras().getInt("threadType");
 
         convoArrayAdapter = new ArrayAdapter<String>(CardplayPlaceholderActivity.this, R.layout.message);
         convoView = (ListView) findViewById(R.id.convo);
@@ -30,6 +36,7 @@ public class CardplayPlaceholderActivity extends ThreadHandlingActivity {
         editTextMessage = (EditText) findViewById(R.id.message);
         buttonSend = (Button) findViewById(R.id.send);
         setMultiWriteListener();
+        updateThreadsActivity();
     }
 
     protected void onDestroy(){
@@ -40,8 +47,21 @@ public class CardplayPlaceholderActivity extends ThreadHandlingActivity {
         convoArrayAdapter.add(message);
     }
 
-    public void handleWrittenMessage(String message){
-
+    public String handleWrittenMessage(final String message){
+        if(threadType == Constants.HOST_THREAD) {
+            try {
+                JSONObject update = new JSONObject(message);
+            }
+            catch (JSONException e) {
+                CardplayPlaceholderActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        convoArrayAdapter.add(message);
+                    }
+                });
+            }
+        }
+        return message;
     }
 
     public void setMultiWriteListener() {
@@ -70,6 +90,13 @@ public class CardplayPlaceholderActivity extends ThreadHandlingActivity {
             MyApplication.threadMap.get(key).write(editTextMessage.getText().toString());
         }
         editTextMessage.setText("");
+    }
+
+    public void updateThreadsActivity(){
+        Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
+        for (Integer key : keys) {
+            MyApplication.threadMap.get(key).currentActivity = CardplayPlaceholderActivity.this;
+        }
     }
 
 

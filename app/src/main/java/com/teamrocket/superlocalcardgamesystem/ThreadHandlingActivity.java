@@ -9,5 +9,5 @@ public abstract class ThreadHandlingActivity extends ActionBarActivity {
 
     public abstract void handleReceivedMessage(String message);
 
-    // public abstract void handleWrittenMessage(String message);
+    public abstract String handleWrittenMessage(String message);
 }

@@ -14,13 +14,6 @@
         android:text="@string/roomName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <EditText android:id="@+id/message"
-        android:hint="Message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:imeOptions="actionGo"
-        android:inputType="text"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,44 +27,12 @@
             android:text="client"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        <Button android:id="@+id/send"
-            android:text="Send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"/>
-        <Button android:id="@+id/start_game"
-            android:text="@string/start_game"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"/>
     </LinearLayout>
 
-
-    <LinearLayout android:id="@+id/connection_info_layout"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView android:id="@+id/info"
-            android:text="Game Port: "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:paddingRight="10dp"/>
-        <TextView android:id="@+id/infoip"
-            android:text="IPinfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView android:id="@+id/roomNameText"
-            android:text=""
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-    </LinearLayout>
-
-    <ImageView android:id="@+id/splash_icon"
-        android:src="@drawable/splash_mascot_icon"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent" />
 
     <ListView android:id="@+id/convo"
         android:layout_width="match_parent"

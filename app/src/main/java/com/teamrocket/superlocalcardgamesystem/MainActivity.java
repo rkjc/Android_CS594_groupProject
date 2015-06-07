@@ -1,5 +1,6 @@
 package com.teamrocket.superlocalcardgamesystem;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -24,56 +25,51 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends ThreadHandlingActivity {
-	private final String TAG = "MainActivity";
+	public static final String TAG = "MainActivity";
 
-    private int threadType;
+    public int threadType;
+    public String localName;
 	RegisterNetworkService registerNetworkService;
 	DiscoverNetworkService discoverNetworkService;
 	ServerSocket serverSocket;
 	ConnectedThread connectedThread;
 
+    List<InetAddress> addresses;
+    List<Integer> ports;
+
     // UI elements
-    TextView info, infoIp, roomNameText;
-	EditText editTextMessage, joinRoomName;
-	Button buttonSend, buttonStartGame, buttonHost, buttonClient;
-	ArrayAdapter convoArrayAdapter;
-	ListView convoView;
-	ImageView iconView;
+	EditText joinRoomName;
+	Button buttonHost, buttonClient;
+
+    ConnectionFragment connectionFragment;
+    LobbyFragment lobbyFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		info = (TextView) findViewById(R.id.info);
-		infoIp = (TextView) findViewById(R.id.infoip);
-        roomNameText= (TextView) findViewById(R.id.roomNameText);
-		convoArrayAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.message);
-		convoView = (ListView) findViewById(R.id.convo);
-		convoView.setAdapter(convoArrayAdapter);
-		editTextMessage = (EditText) findViewById(R.id.message);
 		joinRoomName = (EditText) findViewById(R.id.join_room_name);
-		buttonSend = (Button) findViewById(R.id.send);
-		buttonStartGame = (Button) findViewById(R.id.start_game);
 		buttonHost = (Button) findViewById(R.id.host);
 		buttonClient = (Button) findViewById(R.id.client);
-		iconView = (ImageView) findViewById(R.id.splash_icon);
 
-		setMultiWriteListener();
+        addresses = new ArrayList<InetAddress>();
+        ports = new ArrayList<Integer>();
 
-		infoIp.setText(getIpAddress());
-		Log.i(TAG, getIpAddress());
+//		Log.i(TAG, getIpAddress());
 
 		buttonHost.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "setting up host thread");
                 String roomName = joinRoomName.getText().toString();
+                localName = roomName;
 				registerNetworkService = new RegisterNetworkService(getApplicationContext(), roomName);
-                roomNameText.setText(roomName);
 				threadType = Constants.HOST_THREAD;
 				Thread socketServerThread = new Thread(new SocketServerThread());
 				socketServerThread.start();
@@ -83,6 +79,11 @@ public class MainActivity extends ThreadHandlingActivity {
 		buttonClient.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+                connectionFragment = new ConnectionFragment();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.container, connectionFragment);
+                ft.commit();
+
 				Log.d(TAG, "setting up client thread");
 				Toast.makeText(getApplicationContext(),
 						"searching for game to join, please wait", Toast.LENGTH_LONG)
@@ -91,17 +92,10 @@ public class MainActivity extends ThreadHandlingActivity {
 				ServiceResolvedHandler serviceResolvedHandler = new ServiceResolvedHandlerImpl();
 				discoverNetworkService = new DiscoverNetworkService(getApplicationContext(),
 						serviceResolvedHandler, roomName );
-                roomNameText.setText(roomName);
+                //roomNameText.setText(roomName);
 			}
 		});
 
-        buttonStartGame.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(MainActivity.this, CardplayPlaceholderActivity.class);
-                startActivity(intent);
-            }
-        });
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
@@ -122,54 +116,27 @@ public class MainActivity extends ThreadHandlingActivity {
 	}
 
 	public void setupHostLobby() {
-		buttonSend.setVisibility(View.VISIBLE);
-		buttonStartGame.setVisibility(View.VISIBLE);
 		buttonClient.setVisibility(View.GONE);
 		buttonHost.setVisibility(View.GONE);
-		info.setVisibility(View.VISIBLE);
-        roomNameText.setVisibility(View.VISIBLE);
-		editTextMessage.setVisibility(View.VISIBLE);
 		joinRoomName.setVisibility(View.GONE);
-		iconView.setVisibility(View.GONE);
+
+        lobbyFragment = new LobbyFragment();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.container, lobbyFragment);
+        ft.commit();
 	}
 
-	public void setupClientLobby() {
-		buttonSend.setVisibility(View.VISIBLE);
-		buttonClient.setVisibility(View.GONE);
+    public void setupClientLobby(){
+        buttonClient.setVisibility(View.GONE);
 		buttonHost.setVisibility(View.GONE);
-		info.setVisibility(View.VISIBLE);
-        roomNameText.setVisibility(View.VISIBLE);
-		editTextMessage.setVisibility(View.VISIBLE);
-		joinRoomName.setVisibility(View.GONE);
-		iconView.setVisibility(View.GONE);
-	}
+        joinRoomName.setVisibility(View.GONE);
+    }
 
-	public void setMultiWriteListener() {
-		buttonSend.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				writeToThreads();
-			}
-		});
-
-        editTextMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_GO){
-                    writeToThreads();
-                    return true;
-                }
-                return false;
-            }
-        });
-	}
-
-    public void writeToThreads(){
+    public void writeToThreads(String message){
         Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
         for (Integer key : keys) {
-            MyApplication.threadMap.get(key).write(editTextMessage.getText().toString());
+            MyApplication.threadMap.get(key).write(message);
         }
-        editTextMessage.setText("");
     }
 
     public void handleReceivedMessage(String message){
@@ -178,24 +145,46 @@ public class MainActivity extends ThreadHandlingActivity {
         try {
             JSONObject update = new JSONObject(message);
             if(update.has("playerId")){
-                MyApplication.setPlayerId( update.getInt("playerId") );
+                MyApplication.setPlayerId(update.getInt("playerId"));
                 Log.i(TAG, "updated playerId to " + MyApplication.getPlayerId() );
             }
         }
         catch(JSONException e){
-            convoArrayAdapter.add(message);
+            if(threadType == Constants.CLIENT_THREAD) {
+                lobbyFragment.convoArrayAdapter.add(message);
+            }
         }
 
     }
 
-    public void handleWrittenMessage(String message){
-        ;
+    public String handleWrittenMessage(final String message){
+        if(threadType == Constants.HOST_THREAD) {
+            try {
+                JSONObject update = new JSONObject(message);
+            }
+            catch (JSONException e) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        lobbyFragment.convoArrayAdapter.add(message);
+                    }
+                });
+            }
+        }
+        return message;
     }
 
 	public void makeClientConnection(InetAddress ipAddress, int port) {
+        discoverNetworkService.tearDown();
 		threadType = Constants.CLIENT_THREAD;
 		Thread thread = new Thread(new SocketClientThread(ipAddress.getHostAddress(), port));
 		thread.start();
+
+        lobbyFragment = new LobbyFragment();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.container, lobbyFragment);
+        ft.commit();
+
 		setupClientLobby();
 		Toast.makeText(getApplicationContext(), "entered the lobby", Toast.LENGTH_SHORT).show();
 	}
@@ -209,7 +198,7 @@ public class MainActivity extends ThreadHandlingActivity {
 				MainActivity.this.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						info.setText("Game Port: " + serverSocket.getLocalPort());
+//						info.setText("Game Port: " + serverSocket.getLocalPort());
 					}
 				});
 				while (true) {
@@ -258,34 +247,15 @@ public class MainActivity extends ThreadHandlingActivity {
 	}
 
 
-	private String getIpAddress() {
-		String ip = "";
-		try {
-			Enumeration<NetworkInterface> enumNetworkInterfaces =
-					NetworkInterface.getNetworkInterfaces();
-			while (enumNetworkInterfaces.hasMoreElements()) {
-				NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
-				Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
-				while (enumInetAddress.hasMoreElements()) {
-					InetAddress inetAddress = enumInetAddress.nextElement();
-					if (inetAddress.isSiteLocalAddress()) {
-						ip += "Address: " + inetAddress.getHostAddress() + "\n";
-					}
-				}
-			}
-		} catch (SocketException e) {
-			Log.e(TAG, "getIpAddress()", e);
-		}
-		return ip;
-	}
-
-
 	class ServiceResolvedHandlerImpl implements ServiceResolvedHandler {
-		public void onServiceResolved(final InetAddress address, final int port) {
+		public void onServiceResolved(final InetAddress address, final int port, final String name) {
 			MainActivity.this.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					makeClientConnection(address, port);
+                    // add to the list view the possible game
+                    connectionFragment.adapter.add(name);
+                    addresses.add(address);
+                    ports.add( new Integer(port) );
 				}
 			});
 		}

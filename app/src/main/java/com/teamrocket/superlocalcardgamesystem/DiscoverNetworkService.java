@@ -22,8 +22,8 @@ public class DiscoverNetworkService {
     public String roomName;
 
 	public DiscoverNetworkService(Context context, ServiceResolvedHandler serviceResolvedHandler, String roomName) {
-        this.roomName = Constants.SERVICE_DISCOVERY_NAME+ roomName;
-		this.serviceResolvedHandler = serviceResolvedHandler;
+        //this.roomName = Constants.SERVICE_DISCOVERY_NAME + roomName;
+        this.serviceResolvedHandler = serviceResolvedHandler;
 		initializeDiscoveryListener();
 		this.mNsdManager = (NsdManager) context.getSystemService(context.NSD_SERVICE);
 		mNsdManager.discoverServices(
@@ -35,9 +35,9 @@ public class DiscoverNetworkService {
 		serviceResolvedHandler = listener;
 	}
 
-	public void eventFired(InetAddress address, int port) {
+	public void eventFired(InetAddress address, int port, String name) {
 		if (serviceResolvedHandler != null) {
-			serviceResolvedHandler.onServiceResolved(address, port);
+			serviceResolvedHandler.onServiceResolved(address, port, name);
 		}
 	}
 
@@ -62,7 +62,8 @@ public class DiscoverNetworkService {
 					// The name of the service tells the user what they'd be
 					// connecting to. It could be "Bob's Chat App".
 					Log.d(TAG, "Same machine: " + mServiceName);
-				} else if (service.getServiceName().contains(roomName)) {
+//				} else if (service.getServiceName().contains(roomName)) {
+                } else if (service.getServiceName().contains(Constants.SERVICE_DISCOVERY_NAME)) {
 					initializeResolveListener();
 					mNsdManager.resolveService(service, mResolveListener);
 				}
@@ -110,12 +111,14 @@ public class DiscoverNetworkService {
 					return;
 				}
 				mService = serviceInfo;
+                String name = mService.getServiceName().replace(Constants.SERVICE_DISCOVERY_NAME, "");
+                Log.i(TAG, "service in room " + name);
 				int port = mService.getPort();
 				Log.i(TAG, "service on port " + port);
 				InetAddress host = mService.getHost();
 				Log.i(TAG, "service on IP " + host.getHostAddress());
-				serviceResolvedHandler.onServiceResolved(host, port);
-				tearDown();
+				serviceResolvedHandler.onServiceResolved(host, port, name);
+				//tearDown();
 			}
 		};
 	}
