@@ -72,7 +72,8 @@ public class LobbyFragment extends Fragment {
         buttonStartGame.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent intent = new Intent(getActivity(), CardplayPlaceholderActivity.class);
+                //Intent intent = new Intent(getActivity(), CardplayPlaceholderActivity.class);
+                Intent intent = new Intent(getActivity(), CardplayActivity.class);
                 intent.putExtra("threadType", mainActivity.threadType);
                 startActivity(intent);
             }
