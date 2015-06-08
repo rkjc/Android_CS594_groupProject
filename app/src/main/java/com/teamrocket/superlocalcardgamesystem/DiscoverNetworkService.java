@@ -21,14 +21,12 @@ public class DiscoverNetworkService {
 	public ServiceResolvedHandler serviceResolvedHandler;
     public String roomName;
 
-	public DiscoverNetworkService(Context context, ServiceResolvedHandler serviceResolvedHandler, String roomName) {
-        //this.roomName = Constants.SERVICE_DISCOVERY_NAME + roomName;
+	public DiscoverNetworkService(Context context, ServiceResolvedHandler serviceResolvedHandler) {
         this.serviceResolvedHandler = serviceResolvedHandler;
 		initializeDiscoveryListener();
 		this.mNsdManager = (NsdManager) context.getSystemService(context.NSD_SERVICE);
 		mNsdManager.discoverServices(
 				SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
-		//initializeResolveListener();
 	}
 
 	public void setHandlerListener(ServiceResolvedHandler listener) {
@@ -118,12 +116,16 @@ public class DiscoverNetworkService {
 				InetAddress host = mService.getHost();
 				Log.i(TAG, "service on IP " + host.getHostAddress());
 				serviceResolvedHandler.onServiceResolved(host, port, name);
-				//tearDown();
 			}
 		};
 	}
 
 	public void tearDown() {
-		mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+        try {
+            mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+        }
+        catch(IllegalArgumentException e){
+            Log.e(TAG, "exception while tearing down discover network service", e);
+        }
 	}
 }

@@ -1,19 +1,12 @@
 package com.teamrocket.superlocalcardgamesystem;
 
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -21,12 +14,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -34,6 +24,7 @@ public class MainActivity extends ThreadHandlingActivity {
 	public static final String TAG = "MainActivity";
 
     public int threadType;
+    public boolean runningNetworkService;
     public String localName;
 	RegisterNetworkService registerNetworkService;
 	DiscoverNetworkService discoverNetworkService;
@@ -42,6 +33,7 @@ public class MainActivity extends ThreadHandlingActivity {
 
     List<InetAddress> addresses;
     List<Integer> ports;
+    List<String> hostNames;
 
     // UI elements
 	EditText joinRoomName;
@@ -60,8 +52,9 @@ public class MainActivity extends ThreadHandlingActivity {
 
         addresses = new ArrayList<InetAddress>();
         ports = new ArrayList<Integer>();
+        hostNames = new ArrayList<String>();
 
-//		Log.i(TAG, getIpAddress());
+        runningNetworkService = false;
 
 		buttonHost.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -71,6 +64,7 @@ public class MainActivity extends ThreadHandlingActivity {
                 localName = roomName;
 				registerNetworkService = new RegisterNetworkService(getApplicationContext(), roomName);
 				threadType = Constants.HOST_THREAD;
+                runningNetworkService = true;
 				Thread socketServerThread = new Thread(new SocketServerThread());
 				socketServerThread.start();
 				setupHostLobby();
@@ -85,13 +79,14 @@ public class MainActivity extends ThreadHandlingActivity {
                 ft.commit();
 
 				Log.d(TAG, "setting up client thread");
+                threadType = Constants.CLIENT_THREAD;
+                runningNetworkService = true;
 				Toast.makeText(getApplicationContext(),
 						"searching for game to join, please wait", Toast.LENGTH_LONG)
 						.show();
-                String roomName = joinRoomName.getText().toString();
 				ServiceResolvedHandler serviceResolvedHandler = new ServiceResolvedHandlerImpl();
 				discoverNetworkService = new DiscoverNetworkService(getApplicationContext(),
-						serviceResolvedHandler, roomName );
+						serviceResolvedHandler );
                 //roomNameText.setText(roomName);
 			}
 		});
@@ -176,7 +171,7 @@ public class MainActivity extends ThreadHandlingActivity {
 
 	public void makeClientConnection(InetAddress ipAddress, int port) {
         discoverNetworkService.tearDown();
-		threadType = Constants.CLIENT_THREAD;
+        runningNetworkService = false;
 		Thread thread = new Thread(new SocketClientThread(ipAddress.getHostAddress(), port));
 		thread.start();
 
@@ -252,12 +247,41 @@ public class MainActivity extends ThreadHandlingActivity {
 			MainActivity.this.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-                    // add to the list view the possible game
-                    connectionFragment.adapter.add(name);
-                    addresses.add(address);
-                    ports.add( new Integer(port) );
+                    // add to the list view the possible games, that aren't already in the list
+                    if(!hostNames.contains(name)){
+                        connectionFragment.adapter.add(name);
+                        hostNames.add(name);
+                        addresses.add(address);
+                        ports.add( new Integer(port) );
+                    }
 				}
 			});
 		}
 	}
+
+    @Override
+    protected void onPause(){
+        if (registerNetworkService != null)
+            registerNetworkService.tearDown();
+        if (discoverNetworkService != null)
+            discoverNetworkService.tearDown();
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        String roomName = joinRoomName.getText().toString();
+        if(runningNetworkService && threadType == Constants.HOST_THREAD){
+            registerNetworkService = new RegisterNetworkService(getApplicationContext(),roomName );
+        }
+        else if(runningNetworkService && threadType == Constants.CLIENT_THREAD){
+            ServiceResolvedHandler serviceResolvedHandler = new ServiceResolvedHandlerImpl();
+            discoverNetworkService = new DiscoverNetworkService(getApplicationContext(),
+                    serviceResolvedHandler );
+        }
+
+    }
+
 }

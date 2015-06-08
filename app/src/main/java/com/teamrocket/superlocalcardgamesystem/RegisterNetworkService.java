@@ -54,16 +54,23 @@ public class RegisterNetworkService {
 			public void onServiceUnregistered(NsdServiceInfo arg0) {
 				// Service has been unregistered.  This only happens when you call
 				// NsdManager.unregisterService() and pass in this listener.
+                Log.i(TAG, "service unregistered successfully");
 			}
 
 			@Override
 			public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
 				// Unregistration failed.  Put debugging code here to determine why.
+                Log.i(TAG, "failed to unregister network service");
 			}
 		};
 	}
 
 	public void tearDown() {
-		mNsdManager.unregisterService(mRegistrationListener);
+        try {
+            mNsdManager.unregisterService(mRegistrationListener);
+        }
+        catch(IllegalArgumentException e){
+            Log.e(TAG, "tried to tear down after having already been torn down");
+        }
 	}
 }
