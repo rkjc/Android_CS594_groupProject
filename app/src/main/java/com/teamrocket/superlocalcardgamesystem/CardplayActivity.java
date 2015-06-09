@@ -64,14 +64,15 @@ public class CardplayActivity extends ThreadHandlingActivity {
 
     public String handleWrittenMessage(final String message){
         Log.i(TAG, "Fragment handleWrittenMessage called");
-        if(threadType == Constants.HOST_THREAD) {
+        //if(threadType == Constants.HOST_THREAD) {
             try {
                 JSONObject update = new JSONObject(message);
+                //run method to update the display fragment
             }
             catch (JSONException e) {
                 //sending message string
                 theLastMessage = message;
-                //displays sent string on sending system (not to do with json)
+                //displays sent string on sending system (not good to do with json)
                 lastMessage.setText(theLastMessage);
 //                CardplayActivity.this.runOnUiThread(new Runnable() {
 //                    @Override
@@ -80,7 +81,7 @@ public class CardplayActivity extends ThreadHandlingActivity {
 //                    }
 //                });
             }
-        }
+        //}
         return message;
     }
 
