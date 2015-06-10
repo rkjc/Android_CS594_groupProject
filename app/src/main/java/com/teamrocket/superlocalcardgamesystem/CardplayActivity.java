@@ -1,6 +1,7 @@
 package com.teamrocket.superlocalcardgamesystem;
 
 import android.app.FragmentTransaction;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -56,6 +57,7 @@ public class CardplayActivity extends ThreadHandlingActivity {
         updateThreadsActivity();
 
         showHandFragment();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     protected void onDestroy(){
