@@ -17,11 +17,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /**
  * Created by tj on 6/6/15.
  */
 public class LobbyFragment extends Fragment {
+    public static final String TAG = "LobbyFragment";
 
     ArrayAdapter<String> convoArrayAdapter;
     ListView convoView;
@@ -62,6 +66,8 @@ public class LobbyFragment extends Fragment {
 
         roomName = (TextView) view.findViewById(R.id.roomName);
 
+       //get threadtype from parent Activity
+
         editTextMessage = (EditText) view.findViewById(R.id.lobby_message);
         buttonSend = (Button) view.findViewById(R.id.lobby_send);
 
@@ -69,18 +75,24 @@ public class LobbyFragment extends Fragment {
         if(mainActivity.threadType == Constants.HOST_THREAD){
             buttonStartGame.setVisibility(View.VISIBLE);
         }
-        buttonStartGame.setOnClickListener(new View.OnClickListener(){
+        buttonStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                Intent intent = new Intent(getActivity(), CardplayPlaceholderActivity.class);
-                intent.putExtra("threadType", mainActivity.threadType);
-                startActivity(intent);
+            public void onClick(View v) {
+                //send all clients to CardplayActivity mode
+                mainActivity.writeToThreads("RUN_IN_CARDPLAYACTIVITY_MODE");
+                mainActivity.startCardplayActivity();
             }
         });
         setMultiWriteListener();
         return view;
     }
 
+//    void startCardplayActivity(){
+//        //Intent intent = new Intent(getActivity(), CardplayPlaceholderActivity.class);
+//        Intent intent = new Intent(getActivity(), CardplayActivity.class);
+//        intent.putExtra("threadType", mainActivity.threadType);
+//        startActivity(intent);
+//    }
 
 
     public void setMultiWriteListener() {
@@ -95,7 +107,7 @@ public class LobbyFragment extends Fragment {
         editTextMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_GO){
+                if (actionId == EditorInfo.IME_ACTION_GO) {
                     mainActivity.writeToThreads(editTextMessage.getText().toString());
                     editTextMessage.setText("");
                     return true;

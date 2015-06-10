@@ -1,6 +1,7 @@
 package com.teamrocket.superlocalcardgamesystem;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
@@ -127,6 +128,13 @@ public class MainActivity extends ThreadHandlingActivity {
         joinRoomName.setVisibility(View.GONE);
     }
 
+	void startCardplayActivity(){
+		//Intent intent = new Intent(getActivity(), CardplayPlaceholderActivity.class);
+		Intent intent = new Intent(MainActivity.this, CardplayActivity.class);
+		intent.putExtra("threadType", threadType);
+		startActivity(intent);
+	}
+
     public void writeToThreads(String message){
         Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
         for (Integer key : keys) {
@@ -146,6 +154,10 @@ public class MainActivity extends ThreadHandlingActivity {
         }
         catch(JSONException e){
             if(threadType == Constants.CLIENT_THREAD) {
+				if(message.equals("RUN_IN_CARDPLAYACTIVITY_MODE")){
+					startCardplayActivity();
+					return;
+				}
                 lobbyFragment.convoArrayAdapter.add(message);
             }
         }
