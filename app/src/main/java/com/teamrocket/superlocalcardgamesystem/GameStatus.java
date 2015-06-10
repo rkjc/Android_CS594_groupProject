@@ -1,5 +1,7 @@
 package com.teamrocket.superlocalcardgamesystem;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +12,8 @@ import java.util.Random;
  * Created by rkjcx on 6/9/2015.
  */
 public class GameStatus {
+    public static final String TAG = "GameStatus";
+
     public Playingcard cardDeck[];
     public Playingcard cardSetDeck[];
     public Playingcard discardDeck[];
@@ -27,6 +31,7 @@ public class GameStatus {
     public int activePlayerID;
 
     GameStatus(){
+        Log.i(TAG, "constructor called");
         cardDeck = new Playingcard[52];
         cardSetDeck = new Playingcard[52];
         discardDeck = new Playingcard[52];
@@ -47,6 +52,7 @@ public class GameStatus {
     }
 
     public void buildSetDeck(){
+        Log.i(TAG, "buildSetDeck called");
         for(int i = 0; i < 52; i++){
             cardSetDeck[i] = new Playingcard(Playingcard.cardvalues[i], false);
             cardDeck[i] = cardSetDeck[i];
@@ -54,28 +60,32 @@ public class GameStatus {
     }
 
     public void shuffleDeck(){
-        ArrayList<Integer> remainingIndex = new ArrayList<Integer>();
-        for(int i = 0; i < 52; i++){
-            remainingIndex.add(i);
-        }
-
-        Random rand = new Random();
-        //run until there are no more index numbers
-        while(remainingIndex.size() > 0){
-            int randomNum = rand.nextInt(remainingIndex.size() - 1);
-            //gets a random index number then removes that index from the list
-            int tempIndex = remainingIndex.get(randomNum);
-            remainingIndex.remove(randomNum);
-            //fills deck top down with random cards
-            cardDeck[remainingIndex.size() - 1] = cardSetDeck[tempIndex];
-        }
+        Log.i(TAG, "shuffleDeck called");
+//        ArrayList<Integer> remainingIndex = new ArrayList<Integer>();
+//        for(int i = 0; i < 52; i++){
+//            //remainingIndex.add(i);
+//            remainingIndex.add(27);
+//        }
+//
+//        Random rand = new Random();
+//        //run until there are no more index numbers
+//        while(remainingIndex.size() > 0){
+//            int randomNum = rand.nextInt(remainingIndex.size() - 1);
+//            //gets a random index number then removes that index from the list
+//            int tempIndex = remainingIndex.get(randomNum);
+//            remainingIndex.remove(randomNum);
+//            //fills deck top down with random cards
+//            cardDeck[remainingIndex.size() - 1] = cardSetDeck[tempIndex];
+//        }
     }
 
     public void updateStatus(JSONObject stats){
+        Log.i(TAG, "updateStatus called");
         //load attributes
     }
 
     public JSONObject getStatus(){
+        Log.i(TAG, "getStatus called");
         //load attributes
             JSONObject status = new JSONObject();
         //load up the values

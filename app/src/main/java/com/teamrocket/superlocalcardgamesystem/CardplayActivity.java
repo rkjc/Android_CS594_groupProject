@@ -2,6 +2,7 @@ package com.teamrocket.superlocalcardgamesystem;
 
 import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,10 +24,12 @@ public class CardplayActivity extends ThreadHandlingActivity {
     public static final String TAG = "CardplayActivity";
     EditText editTextMessage;
     TextView cardplayText_1, cardplayText_2, cardplayText_3;
-    Button buttonSend;
+    Button buttonSend, buttonHold, buttonReveal, buttonFold, buttonDeal, buttonShuffle;
     ArrayAdapter convoArrayAdapter;
     ListView convoView;
     String otherMessage, outgoingMessage, incommingMessage;
+    GameStatus gamestat;
+    int counter;
 
     int threadType;
 
@@ -36,6 +39,8 @@ public class CardplayActivity extends ThreadHandlingActivity {
         setContentView(R.layout.activity_cardplay);
 
         threadType = getIntent().getExtras().getInt("threadType");
+        gamestat = new GameStatus();
+        counter = 0;
 
         otherMessage = "onCreate init";
         outgoingMessage = "";
@@ -48,7 +53,13 @@ public class CardplayActivity extends ThreadHandlingActivity {
         cardplayText_2 = (TextView) findViewById(R.id.cardplay_textview_2);
         cardplayText_3 = (TextView) findViewById(R.id.cardplay_textview_3);
         editTextMessage = (EditText) findViewById(R.id.edit_message);
+
         buttonSend = (Button) findViewById(R.id.send);
+        buttonHold = (Button) findViewById(R.id.hold);
+        buttonReveal = (Button) findViewById(R.id.reveal);
+        buttonFold = (Button) findViewById(R.id.fold);
+        buttonDeal = (Button) findViewById(R.id.deal);
+        buttonShuffle = (Button) findViewById(R.id.shuffle);
 
         int numss = 27;
         String testss = Integer.toString(numss);
@@ -57,6 +68,18 @@ public class CardplayActivity extends ThreadHandlingActivity {
         updateThreadsActivity();
 
         showHandFragment();
+
+        if(threadType == Constants.HOST_THREAD){
+            Log.i(TAG, "inside threadType test");
+            //buttonDeal.setVisibility(View.VISIBLE);
+            //buttonDeal.setBackgroundColor(Color.RED);
+            //buttonShuffle.setVisibility(View.VISIBLE);
+        }else{
+
+        }
+
+        setButtonListeners();
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
@@ -134,6 +157,15 @@ public class CardplayActivity extends ThreadHandlingActivity {
         //editTextMessage.setText("");
     }
 
+    public void writeToThreads(String mssg){
+        Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
+        for (Integer key : keys) {
+            MyApplication.threadMap.get(key).write(mssg);
+            //MyApplication.threadMap.get(key).write(editTextMessage.getText().toString());
+        }
+        //editTextMessage.setText("");
+    }
+
 
     //used when starting CardplayActivity to reasign from MainActivity to this one
     public void updateThreadsActivity(){
@@ -141,6 +173,51 @@ public class CardplayActivity extends ThreadHandlingActivity {
         for (Integer key : keys) {
             MyApplication.threadMap.get(key).currentActivity = CardplayActivity.this;
         }
+    }
+
+    void setButtonListeners(){
+        buttonHold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonReveal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonFold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonDeal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //for testing debug
+                writeToThreads("Deal button test " + counter++);
+            }
+        });
+
+        buttonShuffle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gamestat.shuffleDeck();
+            }
+        });
+
+//        buttonSend = (Button) findViewById(R.id.send);
+//        buttonHold = (Button) findViewById(R.id.hold);
+//        buttonReveal = (Button) findViewById(R.id.reveal);
+//        buttonFold = (Button) findViewById(R.id.fold);
+//        buttonDeal = (Button) findViewById(R.id.deal);
+//        buttonShuffle = (Button) findViewById(R.id.shuffle);
     }
 
     public void showHandFragment(){
