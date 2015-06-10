@@ -1,6 +1,7 @@
 package com.teamrocket.superlocalcardgamesystem;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
@@ -126,6 +127,13 @@ public class MainActivity extends ThreadHandlingActivity {
 		buttonHost.setVisibility(View.GONE);
         joinRoomName.setVisibility(View.GONE);
     }
+
+	void startCardplayActivity(){
+		//Intent intent = new Intent(getActivity(), CardplayPlaceholderActivity.class);
+		Intent intent = new Intent(MainActivity.this, CardplayActivity.class);
+		intent.putExtra("threadType", threadType);
+		startActivity(intent);
+	}
 
     public void writeToThreads(String message){
         Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
