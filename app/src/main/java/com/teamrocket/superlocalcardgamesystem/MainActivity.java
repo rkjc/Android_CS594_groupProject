@@ -154,6 +154,10 @@ public class MainActivity extends ThreadHandlingActivity {
         }
         catch(JSONException e){
             if(threadType == Constants.CLIENT_THREAD) {
+				if(message.equals("RUN_IN_CARDPLAYACTIVITY_MODE")){
+					startCardplayActivity();
+					return;
+				}
                 lobbyFragment.convoArrayAdapter.add(message);
             }
         }

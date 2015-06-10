@@ -78,6 +78,8 @@ public class LobbyFragment extends Fragment {
         buttonStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //send all clients to CardplayActivity mode
+                mainActivity.writeToThreads("RUN_IN_CARDPLAYACTIVITY_MODE");
                 mainActivity.startCardplayActivity();
             }
         });
