@@ -4,17 +4,19 @@
     android:layout_height="match_parent"
     android:background="#227733">
 
-    <TextView android:id="@+id/tableText"
+    <TextView android:id="@+id/table_text_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#fff"
         android:inputType="text"
-        android:text="Table Fragment"/>
+        android:text="table_text_1t"/>
 
-    <TextView android:id="@+id/playerID"
+    <TextView android:id="@+id/table_text_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#fff"
         android:inputType="text"
-        android:text="playerID"/>
+        android:text="table_text_2"/>
 
     <Button
         android:id="@+id/button1"
@@ -23,6 +25,13 @@
         android:layout_centerInParent="true"
         android:text="Switch to Hand view" />
 
+    <Button
+        android:id="@+id/hold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hold"
+        android:textSize="20sp"
+        />
 
     <FrameLayout
         android:id="@+id/die2"

@@ -19,14 +19,15 @@ import android.widget.TextView;
 /**
  * Created by rkjcx on 6/8/2015.
  */
-public class TableFragment  extends Fragment {
+public class TableFragment  extends Fragment implements CardplayFragmentInterface{
     public static final String TAG = "TableFragment";
 
     CardplayActivity cardplayActivity;
 
-    Button foldHand, revealHand, discardCards, passTurn, button1;
-    TextView tableText, playerID;
+    Button button1, buttonHold;
+    TextView tableText_1, tableText_2;
 
+    int counter;
 
     @Override
     public void onAttach(Activity activity){
@@ -51,9 +52,13 @@ public class TableFragment  extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         Log.i(TAG, "Fragment onCreateView called");
         View view = inflater.inflate(R.layout.fragment_table, container, false);
+        counter =0;
 
-        Button button1 = (Button) view.findViewById(R.id.button1);
-        tableText = (TextView) view.findViewById(R.id.tableText);
+        button1 = (Button) view.findViewById(R.id.button1);
+        buttonHold = (Button) view.findViewById(R.id.hold);
+
+        tableText_1 = (TextView) view.findViewById(R.id.table_text_1);
+        tableText_2 = (TextView) view.findViewById(R.id.table_text_2);
         CardplayActivity activity = (CardplayActivity)this.getActivity();
 
         button1.setOnClickListener(new View.OnClickListener() {
@@ -63,10 +68,20 @@ public class TableFragment  extends Fragment {
             }
         });
 
+        buttonHold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardplayActivity.printBack();
+            }
+        });
+
         return view;
     }
 
-
+    public void refreshView(){
+        Log.i(TAG, "refreshView called");
+        tableText_2.setText("refresh view " + counter++);
+    }
 
     public void setMultiWriteListener() {
 //        buttonSend.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +110,7 @@ public class TableFragment  extends Fragment {
     public void onStart() {
         Log.i(TAG, "Fragment onStart called");
         super.onStart();
-        tableText.setText("eventually playerID here"); //(mainActivity.playerID);
+        tableText_1.setText("eventually playerID here"); //(mainActivity.playerID);
     }
 
     @Override

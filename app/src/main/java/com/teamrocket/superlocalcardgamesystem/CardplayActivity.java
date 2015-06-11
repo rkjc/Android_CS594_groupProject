@@ -1,5 +1,7 @@
 package com.teamrocket.superlocalcardgamesystem;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -24,12 +26,12 @@ public class CardplayActivity extends ThreadHandlingActivity {
     public static final String TAG = "CardplayActivity";
     EditText editTextMessage;
     TextView cardplayText_1, cardplayText_2, cardplayText_3;
-    Button buttonSend, buttonHold, buttonReveal, buttonFold, buttonDeal, buttonShuffle;
+    Button buttonSend;
     ArrayAdapter convoArrayAdapter;
     ListView convoView;
     String otherMessage, outgoingMessage, incommingMessage;
     GameStatus gamestat;
-    int counter;
+    int testCount;
 
     int threadType;
 
@@ -40,7 +42,7 @@ public class CardplayActivity extends ThreadHandlingActivity {
 
         threadType = getIntent().getExtras().getInt("threadType");
         gamestat = new GameStatus();
-        counter = 0;
+        testCount = 0;
 
         otherMessage = "onCreate init";
         outgoingMessage = "";
@@ -55,11 +57,7 @@ public class CardplayActivity extends ThreadHandlingActivity {
         editTextMessage = (EditText) findViewById(R.id.edit_message);
 
         buttonSend = (Button) findViewById(R.id.send);
-        buttonHold = (Button) findViewById(R.id.hold);
-        buttonReveal = (Button) findViewById(R.id.reveal);
-        buttonFold = (Button) findViewById(R.id.fold);
-        buttonDeal = (Button) findViewById(R.id.deal);
-        buttonShuffle = (Button) findViewById(R.id.shuffle);
+
 
         int numss = 27;
         String testss = Integer.toString(numss);
@@ -77,8 +75,6 @@ public class CardplayActivity extends ThreadHandlingActivity {
         }else{
 
         }
-
-        setButtonListeners();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
@@ -175,56 +171,20 @@ public class CardplayActivity extends ThreadHandlingActivity {
         }
     }
 
-    void setButtonListeners(){
-        buttonHold.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
 
-        buttonReveal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    void buttonHold(){}
+    void buttonReveal(){}
+    void buttonFold(){}
+    void buttonDeal(){}
+    void buttonShuffle(){}
 
-            }
-        });
-
-        buttonFold.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        buttonDeal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //for testing debug
-                writeToThreads("Deal button test " + counter++);
-            }
-        });
-
-        buttonShuffle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gamestat.shuffleDeck();
-            }
-        });
-
-//        buttonSend = (Button) findViewById(R.id.send);
-//        buttonHold = (Button) findViewById(R.id.hold);
-//        buttonReveal = (Button) findViewById(R.id.reveal);
-//        buttonFold = (Button) findViewById(R.id.fold);
-//        buttonDeal = (Button) findViewById(R.id.deal);
-//        buttonShuffle = (Button) findViewById(R.id.shuffle);
-    }
 
     public void showHandFragment(){
         Log.i(TAG, "showHandFragment");
         HandFragment handFrag = new HandFragment();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.layout_container, handFrag);
+        ft.replace(R.id.layout_container, handFrag, "current_fragment_tag");
         ft.addToBackStack("fragment hand");
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
@@ -234,10 +194,24 @@ public class CardplayActivity extends ThreadHandlingActivity {
         Log.i(TAG, "showTableFragment");
         TableFragment tableFrag = new TableFragment();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.layout_container, tableFrag);
+        ft.replace(R.id.layout_container, tableFrag, "current_fragment_tag");
         ft.addToBackStack("fragment table");
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
     }
 
+    public void printBack(){
+        Log.i(TAG, "printBack called");
+        cardplayText_2.setText("printback " + testCount++);
+//        FragmentManager fm = getFragmentManager();
+//        CardplayFragmentInterface fragment = (CardplayFragmentInterface)fm.findFragmentByTag("current_fragment_tag");
+//        fragment.refreshView();
+        currentFragment().refreshView();
+    }
+
+    public CardplayFragmentInterface currentFragment(){
+        FragmentManager fm = getFragmentManager();
+        CardplayFragmentInterface fragment = (CardplayFragmentInterface)fm.findFragmentByTag("current_fragment_tag");
+        return fragment;
+    }
 }

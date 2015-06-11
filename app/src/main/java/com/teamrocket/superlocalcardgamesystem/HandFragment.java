@@ -2,6 +2,7 @@ package com.teamrocket.superlocalcardgamesystem;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,14 +20,14 @@ import android.widget.TextView;
 /**
  * Created by rkjcx on 6/8/2015.
  */
-public class HandFragment  extends Fragment {
+public class HandFragment  extends Fragment implements CardplayFragmentInterface{
     public static final String TAG = "HandFragment";
 
     CardplayActivity cardplayActivity;
 
-    Button foldHand, revealHand, discardCards, passTurn, button1;
+    Button button1, buttonHold, buttonReveal, buttonFold, buttonDeal, buttonShuffle;
     TextView handText, playerID;
-
+    int counter;
 
     @Override
     public void onAttach(Activity activity){
@@ -51,45 +52,72 @@ public class HandFragment  extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         Log.i(TAG, "Fragment onCreateView called");
         View view = inflater.inflate(R.layout.fragment_hand, container, false);
+        //CardplayActivity activity = (CardplayActivity)this.getActivity();
+        CardplayActivity activity = (CardplayActivity)getActivity();
 
-        Button button1 = (Button) view.findViewById(R.id.button1);
+        counter = 0;
+
         handText = (TextView) view.findViewById(R.id.handText);
-        CardplayActivity activity = (CardplayActivity)this.getActivity();
+        playerID = (TextView) view.findViewById(R.id.player_id);
+
+        button1 = (Button) view.findViewById(R.id.button1);
+        buttonHold = (Button) view.findViewById(R.id.hold);
+        buttonReveal = (Button) view.findViewById(R.id.reveal);
+        buttonFold = (Button) view.findViewById(R.id.fold);
+        buttonDeal = (Button) view.findViewById(R.id.deal);
+        buttonShuffle = (Button) view.findViewById(R.id.shuffle);
 
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                CardplayActivity currentActivity = (CardplayActivity) getActivity();
-                currentActivity.showTableFragment();
+//                CardplayActivity currentActivity = (CardplayActivity) getActivity();
+//                currentActivity.showTableFragment();
+                cardplayActivity.showTableFragment();
             }
         });
 
+        buttonHold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonReveal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonFold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardplayActivity.printBack();
+            }
+        });
+
+        buttonDeal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //for testing debug
+                cardplayActivity.writeToThreads("Deal button test " + counter++);
+            }
+        });
+
+        buttonShuffle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //gamestat.shuffleDeck();
+            }
+        });
         return view;
     }
 
 
-
-    public void setMultiWriteListener() {
-//        buttonSend.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mainActivity.writeToThreads(editTextMessage.getText().toString());
-//                editTextMessage.setText("");
-//            }
-//        });
-//
-//        editTextMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                if(actionId == EditorInfo.IME_ACTION_GO){
-//                    mainActivity.writeToThreads(editTextMessage.getText().toString());
-//                    editTextMessage.setText("");
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
+    public void refreshView(){
+        Log.i(TAG, "refreshView called");
+        playerID.setText("refresh view " + counter++);
     }
-
 
     @Override
     public void onStart() {

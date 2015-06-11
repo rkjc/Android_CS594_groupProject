@@ -8,131 +8,136 @@
     <TextView android:id="@+id/handText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#fff"
         android:inputType="text"
         android:text="Hand Fragment"/>
 
-    <TextView android:id="@+id/playerID"
+    <TextView android:id="@+id/player_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#fff"
         android:inputType="text"
         android:text="playerID"/>
 
-    <Button
-    android:id="@+id/button1"
-    android:layout_width="250dp"
-    android:layout_height="50dp"
-    android:layout_centerInParent="true"
-    android:text="Switch to Table view" />
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        >
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/player_hand"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#224466">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/player_hand"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:background="#224466">
 
-    <FrameLayout
-        android:id="@+id/card1"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="left"
-        android:background="@drawable/card_back_side"
+        <FrameLayout
+            android:id="@+id/card1"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
 
-        android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"/>
 
-    <FrameLayout
-        android:id="@+id/card2"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="left"
-        android:background="@drawable/card_back_side"
-        android:layout_centerVertical="true"/>
+        <FrameLayout
+            android:id="@+id/card2"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true"/>
 
-    <FrameLayout
-        android:id="@+id/card3"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="left"
-        android:background="@drawable/card_back_side"
-        android:layout_centerVertical="true"/>
+        <FrameLayout
+            android:id="@+id/card3"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true"/>
 
-    <FrameLayout
-        android:id="@+id/card4"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="left"
-        android:background="@drawable/card_back_side"
-        android:layout_centerVertical="true"/>
+        <FrameLayout
+            android:id="@+id/card4"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true"/>
 
-    <FrameLayout
-        android:id="@+id/card5"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="left"
-        android:background="@drawable/card_back_side"
-        android:layout_centerVertical="true"/>
+        <FrameLayout
+            android:id="@+id/card5"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true"/>
 
-    </LinearLayout>
+        </LinearLayout>
 
 
         <LinearLayout
             android:layout_toRightOf="@+id/player_hand"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:weightSum="1.0">
+            android:layout_weight="1.0">
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:text="Switch to Table view" />
 
             <Button
                 android:id="@+id/hold"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Hold"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 />
 
             <Button
                 android:id="@+id/reveal"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Reveal"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 />
 
             <Button
                 android:id="@+id/fold"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Fold"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 />
 
             <Button
                 android:id="@+id/shuffle"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="shuffle"
-                android:textSize="30sp"
+                android:textSize="20sp"
 
                 />
 
             <Button
                 android:id="@+id/deal"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="deal"
-                android:textSize="30sp"
+                android:textSize="20sp"
 
                 />
 
