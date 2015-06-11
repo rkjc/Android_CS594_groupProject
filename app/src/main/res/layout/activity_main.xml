@@ -20,11 +20,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button android:id="@+id/host"
-            android:text="Host"
+            android:text="Host Game"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Button android:id="@+id/client"
-            android:text="client"
+            android:text="Find Game"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
