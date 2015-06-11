@@ -31,6 +31,7 @@ public class CardplayActivity extends ThreadHandlingActivity {
     ListView convoView;
     String otherMessage, outgoingMessage, incommingMessage;
     GameStatus gamestat;
+    JSONObject jsonStatusObject;
     int testCount;
 
     int threadType;
@@ -43,13 +44,12 @@ public class CardplayActivity extends ThreadHandlingActivity {
         threadType = getIntent().getExtras().getInt("threadType");
         gamestat = new GameStatus();
         testCount = 0;
+        jsonStatusObject = new JSONObject();
 
         otherMessage = "onCreate init";
         outgoingMessage = "";
         incommingMessage = "";
-//        convoArrayAdapter = new ArrayAdapter<String>(CardplayActivity.this, R.layout.message);
-//        convoView = (ListView) findViewById(R.id.convo);
-//        convoView.setAdapter(convoArrayAdapter);
+
 
         cardplayText_1 = (TextView) findViewById(R.id.cardplay_textview_1);
         cardplayText_2 = (TextView) findViewById(R.id.cardplay_textview_2);
@@ -90,7 +90,15 @@ public class CardplayActivity extends ThreadHandlingActivity {
         //theLastMessage = message;
         //displays received message
         incommingMessage = message;
-        cardplayText_2.setText(incommingMessage);
+
+        try {
+            JSONObject update = new JSONObject(incommingMessage);
+            gamestat.updateStatus(update);
+            currentFragment().refreshView();
+        }
+        catch(JSONException e){
+            cardplayText_2.setText(incommingMessage);
+        }
     }
 
     //host rebroadcasts received messages
@@ -157,7 +165,6 @@ public class CardplayActivity extends ThreadHandlingActivity {
         Integer[] keys = MyApplication.threadMap.keySet().toArray(new Integer[0]);
         for (Integer key : keys) {
             MyApplication.threadMap.get(key).write(mssg);
-            //MyApplication.threadMap.get(key).write(editTextMessage.getText().toString());
         }
         //editTextMessage.setText("");
     }
@@ -173,11 +180,27 @@ public class CardplayActivity extends ThreadHandlingActivity {
 
 
 
-    void buttonHold(){}
-    void buttonReveal(){}
+    void buttonHold(){
+        jsonStatusObject = gamestat.getStatus();
+    }
+
+    void buttonReveal(){
+        gamestat.updateStatus(jsonStatusObject.toString());
+    }
     void buttonFold(){}
-    void buttonDeal(){}
-    void buttonShuffle(){}
+
+    void buttonDeal(){
+        Log.i(TAG, "buttonDeal");
+        gamestat.dealCards();
+        currentFragment().refreshView();
+        jsonStatusObject = gamestat.getStatus();
+        writeToThreads(jsonStatusObject.toString());
+    }
+
+    void buttonShuffle(){
+        Log.i(TAG, "buttonShuffle");
+        gamestat.shuffleDeck();
+    }
 
 
     public void showHandFragment(){
