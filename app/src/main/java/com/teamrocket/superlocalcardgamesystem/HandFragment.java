@@ -69,8 +69,16 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
         buttonHold = (Button) view.findViewById(R.id.hold);
         buttonReveal = (Button) view.findViewById(R.id.reveal);
         buttonFold = (Button) view.findViewById(R.id.fold);
+
+        //
         buttonDeal = (Button) view.findViewById(R.id.deal);
         buttonShuffle = (Button) view.findViewById(R.id.shuffle);
+        // hide the buttons when the player is a client
+        if(cardplayActivity.threadType == Constants.CLIENT_THREAD){
+            buttonDeal.setVisibility(View.INVISIBLE);
+            buttonShuffle.setVisibility(View.INVISIBLE);
+        }
+
 
         handText_2.setText("playerID= " + MyApplication.playerId);
 
