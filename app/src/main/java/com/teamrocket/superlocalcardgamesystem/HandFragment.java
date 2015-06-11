@@ -124,62 +124,62 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
         Log.i(TAG, "refreshView called");
         //handText_1.setText("refresh view " + counter++);
         StringBuilder sb = new StringBuilder();
+        try {
+            if (MyApplication.playerId == 0) {
+                cardText_1.setText(cardplayActivity.gamestat.player0Hand.get(0).value);
+                cardText_2.setText(cardplayActivity.gamestat.player0Hand.get(1).value);
+                cardText_3.setText(cardplayActivity.gamestat.player0Hand.get(2).value);
+                cardText_4.setText(cardplayActivity.gamestat.player0Hand.get(3).value);
+                cardText_5.setText(cardplayActivity.gamestat.player0Hand.get(4).value);
 
-        if(MyApplication.playerId == 0) {
-            cardText_1.setText(cardplayActivity.gamestat.player0Hand.get(0).value);
-            cardText_2.setText(cardplayActivity.gamestat.player0Hand.get(1).value);
-            cardText_3.setText(cardplayActivity.gamestat.player0Hand.get(2).value);
-            cardText_4.setText(cardplayActivity.gamestat.player0Hand.get(3).value);
-            cardText_5.setText(cardplayActivity.gamestat.player0Hand.get(4).value);
+                for (int i = 0; i < cardplayActivity.gamestat.player0Hand.size(); i++) {
+                    sb.append(cardplayActivity.gamestat.player0Hand.get(i).value);
+                    sb.append(" ");
+                }
+                handText_1.setText(sb.toString());
+                sb.setLength(0);
+            } else if (MyApplication.playerId == 1) {
+                cardText_1.setText(cardplayActivity.gamestat.player1Hand.get(0).value);
+                cardText_2.setText(cardplayActivity.gamestat.player1Hand.get(1).value);
+                cardText_3.setText(cardplayActivity.gamestat.player1Hand.get(2).value);
+                cardText_4.setText(cardplayActivity.gamestat.player1Hand.get(3).value);
+                cardText_5.setText(cardplayActivity.gamestat.player1Hand.get(4).value);
 
-            for (int i = 0; i < cardplayActivity.gamestat.player0Hand.size(); i++) {
-                sb.append(cardplayActivity.gamestat.player0Hand.get(i).value);
-                sb.append(" ");
+                for (int i = 0; i < cardplayActivity.gamestat.player1Hand.size(); i++) {
+                    sb.append(cardplayActivity.gamestat.player1Hand.get(i).value);
+                    sb.append(" ");
+                }
+                handText_1.setText(sb.toString());
+                sb.setLength(0);
+            } else if (MyApplication.playerId == 2) {
+                cardText_1.setText(cardplayActivity.gamestat.player2Hand.get(0).value);
+                cardText_2.setText(cardplayActivity.gamestat.player2Hand.get(1).value);
+                cardText_3.setText(cardplayActivity.gamestat.player2Hand.get(2).value);
+                cardText_4.setText(cardplayActivity.gamestat.player2Hand.get(3).value);
+                cardText_5.setText(cardplayActivity.gamestat.player2Hand.get(4).value);
+
+                for (int i = 0; i < cardplayActivity.gamestat.player2Hand.size(); i++) {
+                    sb.append(cardplayActivity.gamestat.player2Hand.get(i).value);
+                    sb.append(" ");
+                }
+                handText_1.setText(sb.toString());
+                sb.setLength(0);
+            } else {
+                cardText_1.setText(cardplayActivity.gamestat.player3Hand.get(0).value);
+                cardText_2.setText(cardplayActivity.gamestat.player3Hand.get(1).value);
+                cardText_3.setText(cardplayActivity.gamestat.player3Hand.get(2).value);
+                cardText_4.setText(cardplayActivity.gamestat.player3Hand.get(3).value);
+                cardText_5.setText(cardplayActivity.gamestat.player3Hand.get(4).value);
+
+                for (int i = 0; i < cardplayActivity.gamestat.player3Hand.size(); i++) {
+                    sb.append(cardplayActivity.gamestat.player3Hand.get(i).value);
+                    sb.append(" ");
+                }
+                handText_1.setText(sb.toString());
+                sb.setLength(0);
             }
-            handText_1.setText(sb.toString());
-            sb.setLength(0);
-        }
-        else if(MyApplication.playerId == 1){
-            cardText_1.setText(cardplayActivity.gamestat.player1Hand.get(0).value);
-            cardText_2.setText(cardplayActivity.gamestat.player1Hand.get(1).value);
-            cardText_3.setText(cardplayActivity.gamestat.player1Hand.get(2).value);
-            cardText_4.setText(cardplayActivity.gamestat.player1Hand.get(3).value);
-            cardText_5.setText(cardplayActivity.gamestat.player1Hand.get(4).value);
-
-            for (int i = 0; i < cardplayActivity.gamestat.player1Hand.size(); i++) {
-                sb.append(cardplayActivity.gamestat.player1Hand.get(i).value);
-                sb.append(" ");
-            }
-            handText_1.setText(sb.toString());
-            sb.setLength(0);
-        }
-        else if(MyApplication.playerId == 2){
-            cardText_1.setText(cardplayActivity.gamestat.player2Hand.get(0).value);
-            cardText_2.setText(cardplayActivity.gamestat.player2Hand.get(1).value);
-            cardText_3.setText(cardplayActivity.gamestat.player2Hand.get(2).value);
-            cardText_4.setText(cardplayActivity.gamestat.player2Hand.get(3).value);
-            cardText_5.setText(cardplayActivity.gamestat.player2Hand.get(4).value);
-
-            for (int i = 0; i < cardplayActivity.gamestat.player2Hand.size(); i++) {
-                sb.append(cardplayActivity.gamestat.player2Hand.get(i).value);
-                sb.append(" ");
-            }
-            handText_1.setText(sb.toString());
-            sb.setLength(0);
-        }
-        else {
-            cardText_1.setText(cardplayActivity.gamestat.player3Hand.get(0).value);
-            cardText_2.setText(cardplayActivity.gamestat.player3Hand.get(1).value);
-            cardText_3.setText(cardplayActivity.gamestat.player3Hand.get(2).value);
-            cardText_4.setText(cardplayActivity.gamestat.player3Hand.get(3).value);
-            cardText_5.setText(cardplayActivity.gamestat.player3Hand.get(4).value);
-
-            for (int i = 0; i < cardplayActivity.gamestat.player3Hand.size(); i++) {
-                sb.append(cardplayActivity.gamestat.player3Hand.get(i).value);
-                sb.append(" ");
-            }
-            handText_1.setText(sb.toString());
-            sb.setLength(0);
+        }catch(Exception e){
+            Log.i(TAG, "refreshView caught exception " + e);
         }
 
     }

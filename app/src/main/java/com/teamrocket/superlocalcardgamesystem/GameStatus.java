@@ -116,6 +116,7 @@ public class GameStatus {
         }
     }
 
+    //update function that accepts JSON object in String form
     public void updateStatus(String jsonStr){
         try {
             updateStatus(new JSONObject(jsonStr));
@@ -124,17 +125,38 @@ public class GameStatus {
         }
     }
 
+    //loads in JSON file and updates all attribute values to match
     public void updateStatus(JSONObject stats){
         Log.i(TAG, "updateStatus called");
         //load attributes from JSON into local variables and arrays
+        cardDeck.clear();
+        discardDeck.clear();
         player0Hand.clear();
         player1Hand.clear();
         player2Hand.clear();
         player3Hand.clear();
+        player0Table.clear();
+        player1Table.clear();
+        player2Table.clear();
+        player3Table.clear();
 
         JSONObject jobject = stats;
         JSONArray jsonA;
         try {
+            jsonA = jobject.getJSONArray("cardDeck");
+            for(int i = 0; i < jsonA.length(); i++){
+                JSONObject jcard = jsonA.getJSONObject(i);
+                Playingcard acard = Playingcard.cardFromJSON(jcard);
+                cardDeck.add(acard);
+            }
+
+            jsonA = jobject.getJSONArray("discardDeck");
+            for(int i = 0; i < jsonA.length(); i++){
+                JSONObject jcard = jsonA.getJSONObject(i);
+                Playingcard acard = Playingcard.cardFromJSON(jcard);
+                discardDeck.add(acard);
+            }
+
             jsonA = jobject.getJSONArray("player0Hand");
             for(int i = 0; i < jsonA.length(); i++){
                 JSONObject jcard = jsonA.getJSONObject(i);
@@ -163,6 +185,35 @@ public class GameStatus {
                 player3Hand.add(acard);
             }
 
+            //import new values for player table card display
+            jsonA = jobject.getJSONArray("player0Table");
+            for(int i = 0; i < jsonA.length(); i++){
+                JSONObject jcard = jsonA.getJSONObject(i);
+                Playingcard acard = Playingcard.cardFromJSON(jcard);
+                player0Table.add(acard);
+            }
+
+            jsonA = jobject.getJSONArray("player1Table");
+            for(int i = 0; i < jsonA.length(); i++){
+                JSONObject jcard = jsonA.getJSONObject(i);
+                Playingcard acard = Playingcard.cardFromJSON(jcard);
+                player1Table.add(acard);
+            }
+
+            jsonA = jobject.getJSONArray("player2Table");
+            for(int i = 0; i < jsonA.length(); i++){
+                JSONObject jcard = jsonA.getJSONObject(i);
+                Playingcard acard = Playingcard.cardFromJSON(jcard);
+                player2Table.add(acard);
+            }
+
+            jsonA = jobject.getJSONArray("player3Table");
+            for(int i = 0; i < jsonA.length(); i++){
+                JSONObject jcard = jsonA.getJSONObject(i);
+                Playingcard acard = Playingcard.cardFromJSON(jcard);
+                player3Table.add(acard);
+            }
+
 
         }catch(JSONException e){
             Log.i(TAG, "getStatus JSON exploded");
@@ -177,13 +228,14 @@ public class GameStatus {
 
     }
 
-    public JSONObject getStatus(){ //load arrays and variables into a JSON object
+    //load arrays and variables into a JSON object to send
+    public JSONObject getStatus(){
         Log.i(TAG, "getStatus called");
         JSONObject status = new JSONObject();
         //JSONObject playHand = new JSONObject();
 
 
-        //display the contents of player0Hand
+        //display the contents of player0Hand for debug
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < player0Hand.size(); i++){
             sb.append(player0Hand.get(i).value); sb.append(" ");
@@ -195,6 +247,18 @@ public class GameStatus {
         Log.i(TAG, "player0Hand.size()" + player0Hand.size());
         JSONArray tempHandArray;
         try {
+            tempHandArray = new JSONArray();
+            for(int j = 0; j < cardDeck.size(); j++) {
+                tempHandArray.put(cardDeck.get(j).getJSONObject());
+            }
+            status.put("cardDeck", tempHandArray);
+
+            tempHandArray = new JSONArray();
+            for(int j = 0; j < discardDeck.size(); j++) {
+                tempHandArray.put(discardDeck.get(j).getJSONObject());
+            }
+            status.put("discardDeck", tempHandArray);
+
             tempHandArray = new JSONArray();
             for(int j = 0; j < player0Hand.size(); j++) {
                 tempHandArray.put(player0Hand.get(j).getJSONObject());
@@ -219,36 +283,38 @@ public class GameStatus {
             }
             status.put("player3Hand", tempHandArray);
 
+            //******
+
+            tempHandArray = new JSONArray();
+            for(int j = 0; j < player0Table.size(); j++) {
+                tempHandArray.put(player0Table.get(j).getJSONObject());
+            }
+            status.put("player0Table", tempHandArray);
+
+            tempHandArray = new JSONArray();
+            for(int j = 0; j < player1Table.size(); j++) {
+                tempHandArray.put(player1Table.get(j).getJSONObject());
+            }
+            status.put("player1Table", tempHandArray);
+
+            tempHandArray = new JSONArray();
+            for(int j = 0; j < player2Table.size(); j++) {
+                tempHandArray.put(player2Table.get(j).getJSONObject());
+            }
+            status.put("player2Table", tempHandArray);
+
+            tempHandArray = new JSONArray();
+            for(int j = 0; j < player3Table.size(); j++) {
+                tempHandArray.put(player3Table.get(j).getJSONObject());
+            }
+            status.put("player3Table", tempHandArray);
+
+            //****
+            //add individual attribute values here
 
         }catch(JSONException e){
             Log.i(TAG, "getStatus JSON exploded");
         }
-
-
-
-
-        //this will all be moved into the updateStatus method
-
-
-        //then all the cards get stuffed back into the hands
-
-//        ArrayList<Playingcard> tempHand = new ArrayList<Playingcard>();
-//        StringBuilder sb = new StringBuilder();
-//        try {
-//            JSONArray jArray = status.getJSONArray("player0Hand");
-//            for(int ii=0; ii < jArray.length(); ii++) {
-//                sb.append(tempHand.get(ii).value); sb.append(" ");
-//                System.out.println(jArray.getString(ii));
-//            }
-//        }catch(JSONException e){
-//            Log.i(TAG, "getStatus JSON exploded");
-//        }
-//
-//        for(int i = 0; i < cardDeck.size(); i++){
-//            sb.append(cardDeck.get(i).value);
-//            sb.append(" ");
-//        }
-//        Log.i(TAG, "cardDeck " + sb.toString());
 
         Log.i(TAG, "leaving getStatus");
         return status;
