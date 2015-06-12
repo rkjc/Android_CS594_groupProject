@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -24,6 +25,8 @@ public class GameStatus {
     public ArrayList<Playingcard> player1Hand;
     public ArrayList<Playingcard> player2Hand;
     public ArrayList<Playingcard> player3Hand;
+
+    public List<ArrayList<Playingcard>> playerHands;
 
     public ArrayList<Playingcard> player0Table;
     public ArrayList<Playingcard> player1Table;
@@ -44,6 +47,12 @@ public class GameStatus {
         player1Hand = new ArrayList<Playingcard>();
         player2Hand = new ArrayList<Playingcard>();
         player3Hand = new ArrayList<Playingcard>();
+
+        playerHands = new ArrayList<ArrayList<Playingcard>>();
+        playerHands.add(player0Hand);
+        playerHands.add(player1Hand);
+        playerHands.add(player2Hand);
+        playerHands.add(player3Hand);
 
         player0Table = new ArrayList<Playingcard>();
         player1Table = new ArrayList<Playingcard>();
