@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * Created by rkjcx on 6/8/2015.
@@ -204,5 +207,83 @@ public class CardplayActivity extends ThreadHandlingActivity {
         FragmentManager fm = getFragmentManager();
         CardplayFragmentInterface fragment = (CardplayFragmentInterface)fm.findFragmentByTag("current_fragment_tag");
         return fragment;
+    }
+
+    public HashMap<String, Drawable> makeCardMap(){
+        HashMap<String, Drawable> map = new HashMap<String, Drawable>();
+        String[] vals = {"1H","2H","3H","4H","5H","6H","7H","8H","9H","10H","JH","QH","KH","AH",
+                "1D","2D","3D","4D","5D","6D","7D","8D","9D","10D","JD","QD","KD","AD",
+                "1C","2C","3C","4C","5C","6C","7C","8C","9C","10C","JC","QC","KC","AC",
+                "1S","2S","3S","4S","5S","6S","7S","8S","9S","10S","JS","QS","KS","AS","B","X"};
+        // clubs
+
+//        RotateDrawable rd = new RotateDrawable();
+//        rd.setDrawable( getResources().getDrawable(R.drawable.card_clubs_1 ));
+//        rd.setFromDegrees(0);
+//        rd.setToDegrees(90);
+//        rd.getDrawable()
+
+        map.put("1C", getResources().getDrawable(R.drawable.card_clubs_1));
+        map.put("2C", getResources().getDrawable(R.drawable.card_clubs_2));
+        map.put("3C", getResources().getDrawable(R.drawable.card_clubs_3));
+        map.put("4C", getResources().getDrawable(R.drawable.card_clubs_4));
+        map.put("5C", getResources().getDrawable(R.drawable.card_clubs_5));
+        map.put("6C", getResources().getDrawable(R.drawable.card_clubs_6));
+        map.put("7C", getResources().getDrawable(R.drawable.card_clubs_7));
+        map.put("8C", getResources().getDrawable(R.drawable.card_clubs_8));
+        map.put("9C", getResources().getDrawable(R.drawable.card_clubs_9));
+        map.put("10C", getResources().getDrawable(R.drawable.card_clubs_10));
+        map.put("JC", getResources().getDrawable(R.drawable.card_clubs_11));
+        map.put("QC", getResources().getDrawable(R.drawable.card_clubs_12));
+        map.put("KC", getResources().getDrawable(R.drawable.card_clubs_13));
+
+        // diamonds
+        map.put("1D", getResources().getDrawable(R.drawable.card_diamonds_1));
+        map.put("2D", getResources().getDrawable(R.drawable.card_diamonds_2));
+        map.put("3D", getResources().getDrawable(R.drawable.card_diamonds_3));
+        map.put("4D", getResources().getDrawable(R.drawable.card_diamonds_4));
+        map.put("5D", getResources().getDrawable(R.drawable.card_diamonds_5));
+        map.put("6D", getResources().getDrawable(R.drawable.card_diamonds_6));
+        map.put("7D", getResources().getDrawable(R.drawable.card_diamonds_7));
+        map.put("8D", getResources().getDrawable(R.drawable.card_diamonds_8));
+        map.put("9D", getResources().getDrawable(R.drawable.card_diamonds_9));
+        map.put("10D", getResources().getDrawable(R.drawable.card_diamonds_10));
+        map.put("JD", getResources().getDrawable(R.drawable.card_diamonds_11));
+        map.put("QD", getResources().getDrawable(R.drawable.card_diamonds_12));
+        map.put("KD", getResources().getDrawable(R.drawable.card_diamonds_13));
+
+        // hearts
+        map.put("1H", getResources().getDrawable(R.drawable.card_hearts_1));
+        map.put("2H", getResources().getDrawable(R.drawable.card_hearts_2));
+        map.put("3H", getResources().getDrawable(R.drawable.card_hearts_3));
+        map.put("4H", getResources().getDrawable(R.drawable.card_hearts_4));
+        map.put("5H", getResources().getDrawable(R.drawable.card_hearts_5));
+        map.put("6H", getResources().getDrawable(R.drawable.card_hearts_6));
+        map.put("7H", getResources().getDrawable(R.drawable.card_hearts_7));
+        map.put("8H", getResources().getDrawable(R.drawable.card_hearts_8));
+        map.put("9H", getResources().getDrawable(R.drawable.card_hearts_9));
+        map.put("10H", getResources().getDrawable(R.drawable.card_hearts_10));
+        map.put("JH", getResources().getDrawable(R.drawable.card_hearts_11));
+        map.put("QH", getResources().getDrawable(R.drawable.card_hearts_12));
+        map.put("KH", getResources().getDrawable(R.drawable.card_hearts_13));
+
+        // spades
+        map.put("1S", getResources().getDrawable(R.drawable.card_spades_1));
+        map.put("2S", getResources().getDrawable(R.drawable.card_spades_2));
+        map.put("3S", getResources().getDrawable(R.drawable.card_spades_3));
+        map.put("4S", getResources().getDrawable(R.drawable.card_spades_4));
+        map.put("5S", getResources().getDrawable(R.drawable.card_spades_5));
+        map.put("6S", getResources().getDrawable(R.drawable.card_spades_6));
+        map.put("7S", getResources().getDrawable(R.drawable.card_spades_7));
+        map.put("8S", getResources().getDrawable(R.drawable.card_spades_8));
+        map.put("9S", getResources().getDrawable(R.drawable.card_spades_9));
+        map.put("10S", getResources().getDrawable(R.drawable.card_spades_10));
+        map.put("JS", getResources().getDrawable(R.drawable.card_spades_11));
+        map.put("QS", getResources().getDrawable(R.drawable.card_spades_12));
+        map.put("KS", getResources().getDrawable(R.drawable.card_spades_13));
+
+        map.put("B", getResources().getDrawable(R.drawable.card_back_side));
+        map.put("X", getResources().getDrawable(R.drawable.place_holder));
+        return map;
     }
 }
