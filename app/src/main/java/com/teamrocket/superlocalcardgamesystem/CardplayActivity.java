@@ -78,6 +78,12 @@ public class CardplayActivity extends ThreadHandlingActivity {
         Log.i(TAG, "Fragment onDestroy called");
     }
 
+
+    @Override
+    public void onBackPressed(){
+
+    }
+
     //does this on local Activity; Host has additional handling for rebroadcast
     public void handleReceivedMessage(String message){
         Log.i(TAG, "Fragment handleReceivedMessage called");
