@@ -21,25 +21,333 @@
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_centerInParent="true"
-        android:text="Switch to Hand view" />
+        android:text="Switch to Hand view"
+        android:textSize="18sp"/>
 
     <Button
         android:id="@+id/hold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Hold"
-        android:textSize="20sp"
+        android:visibility="gone"
         />
 
-    <FrameLayout
-        android:id="@+id/die2"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:background="#225511"
+    <TextView android:id="@+id/player0_text"
+        android:layout_width="match_parent"
+        android:layout_height="30"
+        android:textColor="#fff"
+        android:inputType="text"
+        android:text="player 0"/>
 
-        android:layout_alignParentRight="true"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/player_0_hand"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:background="#224466">
+
+        <FrameLayout
+            android:id="@+id/player0_card1"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player0_card2"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true"
+            >
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player0_card3"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player0_card4"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player0_card5"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <TextView android:id="@+id/player1_text"
+        android:layout_width="match_parent"
+        android:layout_height="30"
+        android:textColor="#fff"
+        android:inputType="text"
+        android:text="player_1"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/player_2_hand"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:background="#224466">
+
+        <FrameLayout
+            android:id="@+id/player2_card1"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player2_card2"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true"
+            >
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player2_card3"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player2_card4"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player2_card5"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <TextView android:id="@+id/player2_text"
+        android:layout_width="match_parent"
+        android:layout_height="30"
+        android:textColor="#fff"
+        android:inputType="text"
+        android:text="player_2"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/player_3_hand"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:background="#224466">
+
+        <FrameLayout
+            android:id="@+id/player3_card1"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player3_card2"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true"
+            >
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player3_card3"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player3_card4"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player3_card5"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <TextView android:id="@+id/player3_text"
+        android:layout_width="match_parent"
+        android:layout_height="30"
+        android:textColor="#fff"
+        android:inputType="text"
+        android:text="player_3"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/player_1_hand"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:background="#224466">
+
+        <FrameLayout
+            android:id="@+id/player1_card1"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player1_card2"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true"
+            >
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player1_card3"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player1_card4"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/player1_card5"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:background="@drawable/card_back_side"
+            android:layout_centerVertical="true">
+
+
+        </FrameLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
