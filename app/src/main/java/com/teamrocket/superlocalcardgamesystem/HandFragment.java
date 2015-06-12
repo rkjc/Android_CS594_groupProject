@@ -31,7 +31,7 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
     CardplayActivity cardplayActivity;
 
     Button button1, buttonHold, buttonReveal, buttonFold, buttonDeal, buttonShuffle;
-    TextView handText_1, handText_2;
+//    TextView handText_1, handText_2;
     FrameLayout cardImage1, cardImage2, cardImage3, cardImage4, cardImage5;
 
 
@@ -75,8 +75,8 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
         cardImage4 =(FrameLayout) view.findViewById(R.id.card4);
         cardImage5 =(FrameLayout) view.findViewById(R.id.card5);
 
-        handText_1 = (TextView) view.findViewById(R.id.hand_text_1);
-        handText_2 = (TextView) view.findViewById(R.id.hand_text_2);
+//        handText_1 = (TextView) view.findViewById(R.id.hand_text_1);
+//        handText_2 = (TextView) view.findViewById(R.id.hand_text_2);
 
         button1 = (Button) view.findViewById(R.id.button1);
         buttonHold = (Button) view.findViewById(R.id.hold);
@@ -93,7 +93,7 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
         }
 
 
-        handText_2.setText("playerID= " + MyApplication.playerId);
+//        handText_2.setText("playerID= " + MyApplication.playerId);
 
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -169,7 +169,7 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
                 sb.append(cardplayActivity.gamestat.playerHands.get(id).get(i).value);
                 sb.append(" ");
             }
-            handText_1.setText(sb.toString());
+//            handText_1.setText(sb.toString());
             sb.setLength(0);
         }
         catch(Exception e){

@@ -4,19 +4,19 @@
     android:layout_height="match_parent"
     android:background="#227733">
 
-    <TextView android:id="@+id/table_text_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#fff"
-        android:inputType="text"
-        android:text="table_text_1t"/>
+    <!--<TextView android:id="@+id/table_text_1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="#fff"-->
+        <!--android:inputType="text"-->
+        <!--android:text="table_text_1t"/>-->
 
-    <TextView android:id="@+id/table_text_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#fff"
-        android:inputType="text"
-        android:text="table_text_2"/>
+    <!--<TextView android:id="@+id/table_text_2"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="#fff"-->
+        <!--android:inputType="text"-->
+        <!--android:text="table_text_2"/>-->
 
     <Button
         android:id="@+id/button1"
@@ -329,5 +329,6 @@
         </FrameLayout>
 
     </LinearLayout>
+
 
 </LinearLayout>

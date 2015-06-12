@@ -29,6 +29,7 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
     CardplayActivity cardplayActivity;
 
     Button button1, buttonHold;
+
     TextView tableText_1, tableText_2;
     FrameLayout player0_card1, player0_card2, player0_card3, player0_card4, player0_card5;
     FrameLayout player1_card1, player1_card2, player1_card3, player1_card4, player1_card5;
@@ -36,6 +37,7 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
     FrameLayout player3_card1, player3_card2, player3_card3, player3_card4, player3_card5;
 
     HashMap<String, Drawable> cardMap;
+
 
     int counter;
 
@@ -67,6 +69,7 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
 
         button1 = (Button) view.findViewById(R.id.button1);
         buttonHold = (Button) view.findViewById(R.id.hold);
+
 
         tableText_1 = (TextView) view.findViewById(R.id.table_text_1);
         tableText_2 = (TextView) view.findViewById(R.id.table_text_2);
@@ -118,6 +121,7 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
 
     public void refreshView(){
         Log.i(TAG, "refreshView called");
+
         StringBuilder sb = new StringBuilder();
         int id = MyApplication.playerId;
         try {
@@ -220,7 +224,7 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
     public void onStart() {
         Log.i(TAG, "Fragment onStart called");
         super.onStart();
-        tableText_1.setText("eventually playerID here"); //(mainActivity.playerID);
+//        tableText_1.setText("eventually playerID here"); //(mainActivity.playerID);
     }
 
     @Override
