@@ -135,6 +135,7 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
                 cardplayActivity.buttonShuffle();
             }
         });
+        refreshView();
         return view;
     }
 
@@ -263,6 +264,7 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
     public void onResume() {
         Log.i(TAG, "Fragment onResume called");
         super.onResume();
+        refreshView();
     }
 
     @Override
