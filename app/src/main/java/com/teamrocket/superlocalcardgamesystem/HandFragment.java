@@ -33,6 +33,8 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
     Button button1, buttonHold, buttonReveal, buttonFold, buttonDeal, buttonShuffle;
     TextView handText_1, handText_2;
     FrameLayout cardImage1, cardImage2, cardImage3, cardImage4, cardImage5;
+
+
     HashMap<String, Drawable> cardMap;
 
     int counter;

@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,6 +27,11 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
 
     Button button1, buttonHold;
     TextView tableText_1, tableText_2;
+    FrameLayout player0_card1, player0_card2, player0_card3, player0_card4, player0_card5;
+    FrameLayout player1_card1, player1_card2, player1_card3, player0_card4, player0_card5;
+    FrameLayout player2_card1, player2_card2, player2_card3, player0_card4, player0_card5;
+    FrameLayout player3_card1, player3_card2, player3_card3, player0_card4, player0_card5;
+
 
     int counter;
 
