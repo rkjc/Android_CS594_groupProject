@@ -71,8 +71,8 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
         buttonHold = (Button) view.findViewById(R.id.hold);
 
 
-        tableText_1 = (TextView) view.findViewById(R.id.table_text_1);
-        tableText_2 = (TextView) view.findViewById(R.id.table_text_2);
+        //tableText_1 = (TextView) view.findViewById(R.id.table_text_1);
+        //tableText_2 = (TextView) view.findViewById(R.id.table_text_2);
 
         cardMap = cardplayActivity.makeCardMap();
         player0_card1 =(FrameLayout) view.findViewById(R.id.player0_card1);
