@@ -25,7 +25,7 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
     CardplayActivity cardplayActivity;
 
     Button button1, buttonHold;
-    TextView tableText_1, tableText_2;
+//    TextView tableText_1, tableText_2;
 
     int counter;
 
@@ -57,8 +57,8 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
         button1 = (Button) view.findViewById(R.id.button1);
         buttonHold = (Button) view.findViewById(R.id.hold);
 
-        tableText_1 = (TextView) view.findViewById(R.id.table_text_1);
-        tableText_2 = (TextView) view.findViewById(R.id.table_text_2);
+//        tableText_1 = (TextView) view.findViewById(R.id.table_text_1);
+//        tableText_2 = (TextView) view.findViewById(R.id.table_text_2);
         CardplayActivity activity = (CardplayActivity)this.getActivity();
 
         button1.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +80,7 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
 
     public void refreshView(){
         Log.i(TAG, "refreshView called");
-        tableText_2.setText("refresh view " + counter++);
+//        tableText_2.setText("refresh view " + counter++);
     }
 
     public void setMultiWriteListener() {
@@ -110,7 +110,7 @@ public class TableFragment  extends Fragment implements CardplayFragmentInterfac
     public void onStart() {
         Log.i(TAG, "Fragment onStart called");
         super.onStart();
-        tableText_1.setText("eventually playerID here"); //(mainActivity.playerID);
+//        tableText_1.setText("eventually playerID here"); //(mainActivity.playerID);
     }
 
     @Override

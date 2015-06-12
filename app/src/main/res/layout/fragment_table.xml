@@ -4,19 +4,19 @@
     android:layout_height="match_parent"
     android:background="#227733">
 
-    <TextView android:id="@+id/table_text_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#fff"
-        android:inputType="text"
-        android:text="table_text_1t"/>
+    <!--<TextView android:id="@+id/table_text_1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="#fff"-->
+        <!--android:inputType="text"-->
+        <!--android:text="table_text_1t"/>-->
 
-    <TextView android:id="@+id/table_text_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#fff"
-        android:inputType="text"
-        android:text="table_text_2"/>
+    <!--<TextView android:id="@+id/table_text_2"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="#fff"-->
+        <!--android:inputType="text"-->
+        <!--android:text="table_text_2"/>-->
 
     <Button
         android:id="@+id/button1"
@@ -33,13 +33,13 @@
         android:textSize="20sp"
         />
 
-    <FrameLayout
-        android:id="@+id/die2"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:background="#225511"
+    <!--<FrameLayout-->
+        <!--android:id="@+id/die2"-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_height="300dp"-->
+        <!--android:layout_gravity="center_horizontal|center_vertical"-->
+        <!--android:background="#225511"-->
 
-        android:layout_alignParentRight="true"/>
+        <!--android:layout_alignParentRight="true"/>-->
 
 </LinearLayout>
