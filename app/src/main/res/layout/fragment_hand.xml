@@ -5,19 +5,6 @@
     android:layout_height="match_parent"
     android:background="#224466">
 
-    <TextView android:id="@+id/hand_text_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#fff"
-        android:inputType="text"
-        android:text="Hand Fragment"/>
-
-    <TextView android:id="@+id/hand_text_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#fff"
-        android:inputType="text"
-        android:text="playerID"/>
 
 
 

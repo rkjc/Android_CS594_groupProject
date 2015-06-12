@@ -24,7 +24,7 @@ import org.json.JSONObject;
  */
 public class CardplayActivity extends ThreadHandlingActivity {
     public static final String TAG = "CardplayActivity";
-    TextView cardplayText_1, cardplayText_2, cardplayText_3;
+//    TextView cardplayText_1, cardplayText_2, cardplayText_3;
     String otherMessage, outgoingMessage, incommingMessage;
     GameStatus gamestat;
     JSONObject jsonStatusObject;
@@ -47,14 +47,14 @@ public class CardplayActivity extends ThreadHandlingActivity {
         incommingMessage = "";
 
 
-        cardplayText_1 = (TextView) findViewById(R.id.cardplay_textview_1);
-        cardplayText_2 = (TextView) findViewById(R.id.cardplay_textview_2);
-        cardplayText_3 = (TextView) findViewById(R.id.cardplay_textview_3);
+//        cardplayText_1 = (TextView) findViewById(R.id.cardplay_textview_1);
+//        cardplayText_2 = (TextView) findViewById(R.id.cardplay_textview_2);
+//        cardplayText_3 = (TextView) findViewById(R.id.cardplay_textview_3);
 
 
         int numss = 27;
         String testss = Integer.toString(numss);
-        cardplayText_1.setText("threadType= " + threadType + "  playerID= " + MyApplication.playerId);
+//        cardplayText_1.setText("threadType= " + threadType + "  playerID= " + MyApplication.playerId);
         updateThreadsActivity();
 
         showHandFragment();
@@ -89,7 +89,7 @@ public class CardplayActivity extends ThreadHandlingActivity {
             currentFragment().refreshView();
         }
         catch(JSONException e){
-            cardplayText_2.setText(incommingMessage);
+//            cardplayText_2.setText(incommingMessage);
         }
     }
 
@@ -106,7 +106,7 @@ public class CardplayActivity extends ThreadHandlingActivity {
                 //sending message string
                 otherMessage = message;
                 //displays sent string on sending system (not good to do with json)
-                cardplayText_3.setText(otherMessage);
+//                cardplayText_3.setText(otherMessage);
 //                CardplayActivity.this.runOnUiThread(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -193,7 +193,7 @@ public class CardplayActivity extends ThreadHandlingActivity {
 
     public void printBack(){
         Log.i(TAG, "printBack called");
-        cardplayText_2.setText("printback " + testCount++);
+//        cardplayText_2.setText("printback " + testCount++);
 //        FragmentManager fm = getFragmentManager();
 //        CardplayFragmentInterface fragment = (CardplayFragmentInterface)fm.findFragmentByTag("current_fragment_tag");
 //        fragment.refreshView();
