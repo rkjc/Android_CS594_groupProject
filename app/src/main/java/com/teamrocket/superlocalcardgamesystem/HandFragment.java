@@ -31,7 +31,7 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
     CardplayActivity cardplayActivity;
 
     Button button1, buttonHold, buttonReveal, buttonFold, buttonDeal, buttonShuffle;
-    TextView handText_1, handText_2, cardText_1, cardText_2, cardText_3, cardText_4, cardText_5;
+    TextView handText_1, handText_2;
     FrameLayout cardImage1, cardImage2, cardImage3, cardImage4, cardImage5;
     HashMap<String, Drawable> cardMap;
 
@@ -75,11 +75,6 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
 
         handText_1 = (TextView) view.findViewById(R.id.hand_text_1);
         handText_2 = (TextView) view.findViewById(R.id.hand_text_2);
-        cardText_1 = (TextView) view.findViewById(R.id.card_text_1);
-        cardText_2 = (TextView) view.findViewById(R.id.card_text_2);
-        cardText_3 = (TextView) view.findViewById(R.id.card_text_3);
-        cardText_4 = (TextView) view.findViewById(R.id.card_text_4);
-        cardText_5 = (TextView) view.findViewById(R.id.card_text_5);
 
         button1 = (Button) view.findViewById(R.id.button1);
         buttonHold = (Button) view.findViewById(R.id.hold);
@@ -155,11 +150,11 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
             cardValues[3] = cardplayActivity.gamestat.playerHands.get(id).get(3).value;
             cardValues[4] = cardplayActivity.gamestat.playerHands.get(id).get(4).value;
 
-            cardText_1.setText(cardValues[0]);
-            cardText_2.setText(cardValues[1]);
-            cardText_3.setText(cardValues[2]);
-            cardText_4.setText(cardValues[3]);
-            cardText_5.setText(cardValues[4]);
+//            cardText_1.setText(cardValues[0]);
+//            cardText_2.setText(cardValues[1]);
+//            cardText_3.setText(cardValues[2]);
+//            cardText_4.setText(cardValues[3]);
+//            cardText_5.setText(cardValues[4]);
 
             cardImage1.setBackground(cardMap.get(cardValues[0]));
             cardImage2.setBackground(cardMap.get(cardValues[1]));
@@ -180,70 +175,6 @@ public class HandFragment  extends Fragment implements CardplayFragmentInterface
 
     }
 
-
-//    public void refreshView(){
-//        Log.i(TAG, "refreshView called");
-//        //handText_1.setText("refresh view " + counter++);
-//        StringBuilder sb = new StringBuilder();
-//        try {
-//            if (MyApplication.playerId == 0) {
-//                cardText_1.setText(cardplayActivity.gamestat.player0Hand.get(0).value);
-//                cardText_2.setText(cardplayActivity.gamestat.player0Hand.get(1).value);
-//                cardText_3.setText(cardplayActivity.gamestat.player0Hand.get(2).value);
-//                cardText_4.setText(cardplayActivity.gamestat.player0Hand.get(3).value);
-//                cardText_5.setText(cardplayActivity.gamestat.player0Hand.get(4).value);
-//
-//                for (int i = 0; i < cardplayActivity.gamestat.player0Hand.size(); i++) {
-//                    sb.append(cardplayActivity.gamestat.player0Hand.get(i).value);
-//                    sb.append(" ");
-//                }
-//                handText_1.setText(sb.toString());
-//                sb.setLength(0);
-//            } else if (MyApplication.playerId == 1) {
-//                cardText_1.setText(cardplayActivity.gamestat.player1Hand.get(0).value);
-//                cardText_2.setText(cardplayActivity.gamestat.player1Hand.get(1).value);
-//                cardText_3.setText(cardplayActivity.gamestat.player1Hand.get(2).value);
-//                cardText_4.setText(cardplayActivity.gamestat.player1Hand.get(3).value);
-//                cardText_5.setText(cardplayActivity.gamestat.player1Hand.get(4).value);
-//
-//                for (int i = 0; i < cardplayActivity.gamestat.player1Hand.size(); i++) {
-//                    sb.append(cardplayActivity.gamestat.player1Hand.get(i).value);
-//                    sb.append(" ");
-//                }
-//                handText_1.setText(sb.toString());
-//                sb.setLength(0);
-//            } else if (MyApplication.playerId == 2) {
-//                cardText_1.setText(cardplayActivity.gamestat.player2Hand.get(0).value);
-//                cardText_2.setText(cardplayActivity.gamestat.player2Hand.get(1).value);
-//                cardText_3.setText(cardplayActivity.gamestat.player2Hand.get(2).value);
-//                cardText_4.setText(cardplayActivity.gamestat.player2Hand.get(3).value);
-//                cardText_5.setText(cardplayActivity.gamestat.player2Hand.get(4).value);
-//
-//                for (int i = 0; i < cardplayActivity.gamestat.player2Hand.size(); i++) {
-//                    sb.append(cardplayActivity.gamestat.player2Hand.get(i).value);
-//                    sb.append(" ");
-//                }
-//                handText_1.setText(sb.toString());
-//                sb.setLength(0);
-//            } else {
-//                cardText_1.setText(cardplayActivity.gamestat.player3Hand.get(0).value);
-//                cardText_2.setText(cardplayActivity.gamestat.player3Hand.get(1).value);
-//                cardText_3.setText(cardplayActivity.gamestat.player3Hand.get(2).value);
-//                cardText_4.setText(cardplayActivity.gamestat.player3Hand.get(3).value);
-//                cardText_5.setText(cardplayActivity.gamestat.player3Hand.get(4).value);
-//
-//                for (int i = 0; i < cardplayActivity.gamestat.player3Hand.size(); i++) {
-//                    sb.append(cardplayActivity.gamestat.player3Hand.get(i).value);
-//                    sb.append(" ");
-//                }
-//                handText_1.setText(sb.toString());
-//                sb.setLength(0);
-//            }
-//        }catch(Exception e){
-//            Log.i(TAG, "refreshView caught exception " + e);
-//        }
-//
-//    }
 
     public HashMap<String, Drawable> makeCardMap(){
         HashMap<String, Drawable> map = new HashMap<String, Drawable>();

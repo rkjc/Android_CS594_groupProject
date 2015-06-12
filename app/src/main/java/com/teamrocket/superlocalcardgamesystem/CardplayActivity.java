@@ -24,11 +24,7 @@ import org.json.JSONObject;
  */
 public class CardplayActivity extends ThreadHandlingActivity {
     public static final String TAG = "CardplayActivity";
-    EditText editTextMessage;
     TextView cardplayText_1, cardplayText_2, cardplayText_3;
-    Button buttonSend;
-    ArrayAdapter convoArrayAdapter;
-    ListView convoView;
     String otherMessage, outgoingMessage, incommingMessage;
     GameStatus gamestat;
     JSONObject jsonStatusObject;
@@ -54,15 +50,11 @@ public class CardplayActivity extends ThreadHandlingActivity {
         cardplayText_1 = (TextView) findViewById(R.id.cardplay_textview_1);
         cardplayText_2 = (TextView) findViewById(R.id.cardplay_textview_2);
         cardplayText_3 = (TextView) findViewById(R.id.cardplay_textview_3);
-        editTextMessage = (EditText) findViewById(R.id.edit_message);
-
-        buttonSend = (Button) findViewById(R.id.send);
 
 
         int numss = 27;
         String testss = Integer.toString(numss);
         cardplayText_1.setText("threadType= " + threadType + "  playerID= " + MyApplication.playerId);
-        setMultiWriteListener();
         updateThreadsActivity();
 
         showHandFragment();
@@ -126,30 +118,6 @@ public class CardplayActivity extends ThreadHandlingActivity {
         return message;
     }
 
-    public void setMultiWriteListener() {
-        buttonSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                outgoingMessage = editTextMessage.getText().toString();
-                editTextMessage.setText("");
-                writeToThreads();
-            }
-        });
-
-        //this is used so that the message is sent using the keyboard go button
-        editTextMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_GO) {
-                    outgoingMessage = editTextMessage.getText().toString();
-                    editTextMessage.setText("");
-                    writeToThreads();
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
 
 
     public void writeToThreads(){
