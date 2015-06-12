@@ -113,16 +113,36 @@ public class GameStatus {
         player2Hand.clear();
         player3Hand.clear();
 
-        for(int i = 0; i < 5; i++){
-            if(!cardDeck.isEmpty())
-                player0Hand.add(cardDeck.remove(0));
-            if(!cardDeck.isEmpty())
-                player1Hand.add(cardDeck.remove(0));
-            if(!cardDeck.isEmpty())
-                player2Hand.add(cardDeck.remove(0));
-            if(!cardDeck.isEmpty())
-                player3Hand.add(cardDeck.remove(0));
+        int numPlayers = MyApplication.threadMap.size() + 1;
+
+        // calculate how many cards are needed before dealing them out
+
+        if(cardDeck.size() >= numPlayers * 5){
+            // for each player
+            for( int player = 0; player < numPlayers; player += 1){
+                // for each of the 5 cards
+                for(int card = 0; card < 5; card += 1){
+                    playerHands.get(player).add(cardDeck.remove(0));
+                }
+
+            }
         }
+        else{
+            Log.i(TAG, "deck is empty!");
+            // a toast indicating that the deck is empty would be helpful
+        }
+
+
+//        for(int i = 0; i < 5; i++){
+//            if(!cardDeck.isEmpty())
+//                player0Hand.add(cardDeck.remove(0));
+//            if(!cardDeck.isEmpty())
+//                player1Hand.add(cardDeck.remove(0));
+//            if(!cardDeck.isEmpty())
+//                player2Hand.add(cardDeck.remove(0));
+//            if(!cardDeck.isEmpty())
+//                player3Hand.add(cardDeck.remove(0));
+//        }
     }
 
     //update function that accepts JSON object in String form
